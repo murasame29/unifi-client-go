@@ -57,6 +57,18 @@ func (c *Client) Post(ctx context.Context, path string, query url.Values, body i
 	return c.do(ctx, http.MethodPost, path, query, body)
 }
 
+func (c *Client) Put(ctx context.Context, path string, query url.Values, body interface{}) (*http.Response, error) {
+	return c.do(ctx, http.MethodPut, path, query, body)
+}
+
+func (c *Client) Delete(ctx context.Context, path string, query url.Values) (*http.Response, error) {
+	return c.do(ctx, http.MethodDelete, path, query, nil)
+}
+
+func (c *Client) Patch(ctx context.Context, path string, query url.Values, body interface{}) (*http.Response, error) {
+	return c.do(ctx, http.MethodPatch, path, query, body)
+}
+
 func (c *Client) do(ctx context.Context, method, path string, query url.Values, body interface{}) (*http.Response, error) {
 	u, err := url.Parse(c.baseURL + path)
 	if err != nil {
