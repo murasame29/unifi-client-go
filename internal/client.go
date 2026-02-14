@@ -96,7 +96,9 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 }
 
 func Decode(resp *http.Response, v interface{}) error {
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		body, _ := io.ReadAll(resp.Body)
