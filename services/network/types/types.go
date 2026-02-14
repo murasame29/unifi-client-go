@@ -27,21 +27,21 @@ type Site struct {
 }
 
 type AdoptedDevice struct {
-	ID              string          `json:"id"`
-	MacAddress      string          `json:"macAddress"`
-	IPAddress       string          `json:"ipAddress"`
-	Name            string          `json:"name"`
-	Model           string          `json:"model"`
-	Supported       bool            `json:"supported"`
-	State           string          `json:"state"`
-	FirmwareVersion string          `json:"firmwareVersion,omitempty"`
-	FirmwareUpdatable bool          `json:"firmwareUpdatable"`
-	AdoptedAt       string          `json:"adoptedAt,omitempty"`
-	ProvisionedAt   string          `json:"provisionedAt,omitempty"`
-	ConfigurationID string          `json:"configurationId"`
-	Uplink          json.RawMessage `json:"uplink,omitempty"`
-	Features        json.RawMessage `json:"features,omitempty"`
-	Interfaces      json.RawMessage `json:"interfaces,omitempty"`
+	ID                string          `json:"id"`
+	MacAddress        string          `json:"macAddress"`
+	IPAddress         string          `json:"ipAddress"`
+	Name              string          `json:"name"`
+	Model             string          `json:"model"`
+	Supported         bool            `json:"supported"`
+	State             string          `json:"state"`
+	FirmwareVersion   string          `json:"firmwareVersion,omitempty"`
+	FirmwareUpdatable bool            `json:"firmwareUpdatable"`
+	AdoptedAt         string          `json:"adoptedAt,omitempty"`
+	ProvisionedAt     string          `json:"provisionedAt,omitempty"`
+	ConfigurationID   string          `json:"configurationId"`
+	Uplink            json.RawMessage `json:"uplink,omitempty"`
+	Features          json.RawMessage `json:"features,omitempty"`
+	Interfaces        json.RawMessage `json:"interfaces,omitempty"`
 }
 
 type AdoptDeviceRequest struct {
@@ -144,10 +144,10 @@ type Voucher struct {
 }
 
 type GenerateVouchersRequest struct {
-	Count    int    `json:"count"`
-	Duration int    `json:"duration"`
-	DataQuota int   `json:"dataQuota,omitempty"`
-	Note     string `json:"note,omitempty"`
+	Count     int    `json:"count"`
+	Duration  int    `json:"duration"`
+	DataQuota int    `json:"dataQuota,omitempty"`
+	Note      string `json:"note,omitempty"`
 }
 
 type DeleteVouchersRequest struct {
