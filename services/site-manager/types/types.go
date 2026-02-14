@@ -97,11 +97,7 @@ type ISPMetricsQueryResponse struct {
 }
 
 type SDWANConfig struct {
-	ID json.RawMessage `json:"id,omitempty"`
-}
-
-type SDWANConfigStatus struct {
-	Data           json.RawMessage `json:"data,omitempty"`
-	HTTPStatusCode int             `json:"httpStatusCode"`
-	TraceID        string          `json:"traceId"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
