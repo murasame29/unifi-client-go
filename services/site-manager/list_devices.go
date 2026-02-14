@@ -3,6 +3,7 @@ package sitemanager
 import (
 	"context"
 	"net/url"
+	"strconv"
 
 	"github.com/murasame29/unifi-client-go/internal"
 	"github.com/murasame29/unifi-client-go/services/site-manager/types"
@@ -11,7 +12,7 @@ import (
 type ListDevicesParams struct {
 	HostIDs   []string
 	Time      string
-	PageSize  string
+	PageSize  int
 	NextToken string
 }
 
@@ -24,8 +25,8 @@ func (c *Client) ListDevices(ctx context.Context, params *ListDevicesParams) (*t
 		if params.Time != "" {
 			query.Set("time", params.Time)
 		}
-		if params.PageSize != "" {
-			query.Set("pageSize", params.PageSize)
+		if params.PageSize > 0 {
+			query.Set("pageSize", strconv.Itoa(params.PageSize))
 		}
 		if params.NextToken != "" {
 			query.Set("nextToken", params.NextToken)

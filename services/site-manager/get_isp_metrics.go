@@ -2,6 +2,7 @@ package sitemanager
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 
@@ -17,6 +18,10 @@ type GetISPMetricsParams struct {
 }
 
 func (c *Client) GetISPMetrics(ctx context.Context, params GetISPMetricsParams) (*types.SingleResponse[[]types.ISPMetrics], error) {
+	if params.Type == "" {
+		return nil, errors.New("Type parameter is required")
+	}
+
 	query := url.Values{}
 	if params.BeginTimestamp != "" {
 		query.Set("beginTimestamp", params.BeginTimestamp)
