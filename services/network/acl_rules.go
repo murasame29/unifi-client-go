@@ -48,7 +48,7 @@ func (c *Client) DeleteACLRule(ctx context.Context, req types.DeleteACLRuleReque
 }
 
 func (c *Client) GetACLRuleOrdering(ctx context.Context, req types.GetACLRuleOrderingRequest) (*types.ACLRuleOrdering, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/ordering", req.SiteID), nil)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules/ordering", req.SiteID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (c *Client) GetACLRuleOrdering(ctx context.Context, req types.GetACLRuleOrd
 }
 
 func (c *Client) UpdateACLRuleOrdering(ctx context.Context, req types.UpdateACLRuleOrderingRequest) (*types.ACLRuleOrdering, error) {
-	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/ordering", req.SiteID), nil, req)
+	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules/ordering", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (c *Client) ListACLRules(ctx context.Context, req types.ListACLRulesRequest
 	query := url.Values{}
 	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules", req.SiteID), query)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (c *Client) ListACLRules(ctx context.Context, req types.ListACLRulesRequest
 }
 
 func (c *Client) CreateACLRule(ctx context.Context, req types.CreateACLRuleRequest) (*types.ACLRule, error) {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules", req.SiteID), nil, req)
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}

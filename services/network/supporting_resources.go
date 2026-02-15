@@ -103,12 +103,12 @@ func (c *Client) ListDPICategories(ctx context.Context, req types.ListDPICategor
 		return nil, err
 	}
 
-	var result *types.PaginatedResponse[types.DPIApplicationCategory]
+	var result types.PaginatedResponse[types.DPIApplicationCategory]
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 func (c *Client) ListDPIApplications(ctx context.Context, req types.ListDPIApplicationsRequest) (*types.PaginatedResponse[types.DPIApplication], error) {
@@ -120,12 +120,12 @@ func (c *Client) ListDPIApplications(ctx context.Context, req types.ListDPIAppli
 		return nil, err
 	}
 
-	var result *types.PaginatedResponse[types.DPIApplication]
+	var result types.PaginatedResponse[types.DPIApplication]
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 func (c *Client) ListCountries(ctx context.Context, req types.ListCountriesRequest) (*types.PaginatedResponse[types.Country], error) {
@@ -137,10 +137,10 @@ func (c *Client) ListCountries(ctx context.Context, req types.ListCountriesReque
 		return nil, err
 	}
 
-	var result *types.PaginatedResponse[types.Country]
+	var result types.PaginatedResponse[types.Country]
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
