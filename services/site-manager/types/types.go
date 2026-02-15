@@ -61,7 +61,7 @@ type Device struct {
 	IsConsole       bool            `json:"isConsole"`
 	IsManaged       bool            `json:"isManaged"`
 	StartupTime     string          `json:"startupTime"`
-	AdoptionTime    string          `json:"adoptionTime"`
+	AdoptionTime    *string         `json:"adoptionTime"`
 	Note            string          `json:"note"`
 	UIDB            json.RawMessage `json:"uidb,omitempty"`
 }
