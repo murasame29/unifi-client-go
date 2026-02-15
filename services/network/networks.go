@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -39,7 +38,12 @@ func (c *Client) UpdateNetwork(ctx context.Context, req types.UpdateNetworkReque
 }
 
 func (c *Client) DeleteNetwork(ctx context.Context, req types.DeleteNetworkRequest) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", req.SiteID, req.NetworkID), nil)
+	query := url.Values{}
+	if req.Force != nil && *req.Force {
+		query.Set("force", "true")
+	}
+
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", req.SiteID, req.NetworkID), query)
 	if err != nil {
 		return err
 	}
@@ -79,16 +83,16 @@ func (c *Client) CreateNetwork(ctx context.Context, req types.CreateNetworkReque
 	return &result, nil
 }
 
-func (c *Client) GetNetworkReferences(ctx context.Context, req types.GetNetworkReferencesRequest) (json.RawMessage, error) {
+func (c *Client) GetNetworkReferences(ctx context.Context, req types.GetNetworkReferencesRequest) (*types.NetworkReferencesResponse, error) {
 	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s/references", req.SiteID, req.NetworkID), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var result json.RawMessage
+	var result types.NetworkReferencesResponse
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
