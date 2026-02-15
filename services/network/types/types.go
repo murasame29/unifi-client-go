@@ -29,20 +29,40 @@ type Site struct {
 }
 
 type DeviceUplink struct {
-	Type       string `json:"type,omitempty"`
-	MacAddress string `json:"macAddress,omitempty"`
+	DeviceID string `json:"deviceId"`
 }
 
 type DeviceFeatures struct {
-	SwitchCapable      bool `json:"switchCapable,omitempty"`
-	AccessPointCapable bool `json:"accessPointCapable,omitempty"`
-	GatewayCapable     bool `json:"gatewayCapable,omitempty"`
+	Switching   interface{} `json:"switching"`
+	AccessPoint interface{} `json:"accessPoint"`
 }
 
-type DeviceInterface struct {
-	Type       string `json:"type,omitempty"`
-	MacAddress string `json:"macAddress,omitempty"`
-	Name       string `json:"name,omitempty"`
+type PortPoE struct {
+	Standard string `json:"standard"`
+	Type     int    `json:"type"`
+	Enabled  bool   `json:"enabled"`
+	State    string `json:"state"`
+}
+
+type DevicePort struct {
+	Idx          int      `json:"idx"`
+	State        string   `json:"state"`
+	Connector    string   `json:"connector"`
+	MaxSpeedMbps int      `json:"maxSpeedMbps"`
+	SpeedMbps    int      `json:"speedMbps,omitempty"`
+	PoE          *PortPoE `json:"poe,omitempty"`
+}
+
+type DeviceRadio struct {
+	WlanStandard    string  `json:"wlanStandard"`
+	FrequencyGHz    float64 `json:"frequencyGHz"`
+	ChannelWidthMHz int     `json:"channelWidthMHz"`
+	Channel         int     `json:"channel,omitempty"`
+}
+
+type DeviceInterfaces struct {
+	Ports  []DevicePort  `json:"ports,omitempty"`
+	Radios []DeviceRadio `json:"radios,omitempty"`
 }
 
 type AdoptedDevice struct {
@@ -59,8 +79,8 @@ type AdoptedDevice struct {
 	ProvisionedAt     string            `json:"provisionedAt,omitempty"`
 	ConfigurationID   string            `json:"configurationId"`
 	Uplink            *DeviceUplink     `json:"uplink,omitempty"`
-	Features          *DeviceFeatures   `json:"features,omitempty"`
-	Interfaces        []DeviceInterface `json:"interfaces,omitempty"`
+	Features          *DeviceFeatures   `json:"features"`
+	Interfaces        *DeviceInterfaces `json:"interfaces"`
 }
 
 type AdoptDeviceRequest struct {
