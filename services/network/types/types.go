@@ -252,8 +252,8 @@ type NetworkDHCPIPAddressRange struct {
 }
 
 type NetworkPXEConfiguration struct {
-	Server   string `json:"server,omitempty"`
-	Filename string `json:"filename,omitempty"`
+	ServerIPAddress string `json:"serverIpAddress"`
+	Filename        string `json:"filename"`
 }
 
 type NetworkDHCPConfiguration struct {
@@ -271,12 +271,18 @@ type NetworkDHCPConfiguration struct {
 	TimeOffsetSeconds            *int                       `json:"timeOffsetSeconds,omitempty"`
 	WpadUrl                      string                     `json:"wpadUrl,omitempty"`
 	WinsServerIPAddresses        []string                   `json:"winsServerIpAddresses,omitempty"`
-	RelayIPAddress               string                     `json:"relayIpAddress,omitempty"`
+	DhcpServerIPAddresses        []string                   `json:"dhcpServerIpAddresses,omitempty"`
+}
+
+type IPAddressSelector struct {
+	Type  string `json:"type"`
+	Value string `json:"value,omitempty"`
 }
 
 type NetworkNATOutboundIPAddressConfig struct {
-	WanInterfaceId string `json:"wanInterfaceId,omitempty"`
-	IPAddress      string `json:"ipAddress,omitempty"`
+	Type               string              `json:"type"`
+	WanInterfaceID     string              `json:"wanInterfaceId"`
+	IpAddressSelectors []IPAddressSelector `json:"ipAddressSelectors,omitempty"`
 }
 
 type NetworkIPv4Configuration struct {
@@ -288,11 +294,32 @@ type NetworkIPv4Configuration struct {
 	NatOutboundIPAddressConfiguration []NetworkNATOutboundIPAddressConfig `json:"natOutboundIpAddressConfiguration,omitempty"`
 }
 
+type IPv6AddressSuffixRange struct {
+	Start string `json:"start,omitempty"`
+	Stop  string `json:"stop,omitempty"`
+}
+
+type IPv6DHCPConfiguration struct {
+	IPAddressSuffixRange *IPv6AddressSuffixRange `json:"ipAddressSuffixRange"`
+	LeaseTimeSeconds     int                     `json:"leaseTimeSeconds"`
+}
+
+type IPv6ClientAddressAssignment struct {
+	DhcpConfiguration *IPv6DHCPConfiguration `json:"dhcpConfiguration,omitempty"`
+	SlaacEnabled      bool                   `json:"slaacEnabled"`
+}
+
+type IPv6RouterAdvertisement struct {
+	Priority string `json:"priority"`
+}
+
 type NetworkIPv6Configuration struct {
-	Mode          string          `json:"mode,omitempty"`
-	HostIPAddress string          `json:"hostIpAddress,omitempty"`
-	PrefixLength  *int            `json:"prefixLength,omitempty"`
-	Extra         json.RawMessage `json:"-"`
+	InterfaceType                  string                       `json:"interfaceType"`
+	ClientAddressAssignment        *IPv6ClientAddressAssignment `json:"clientAddressAssignment"`
+	RouterAdvertisement            *IPv6RouterAdvertisement     `json:"routerAdvertisement,omitempty"`
+	DnsServerIPAddressesOverride   []string                     `json:"dnsServerIpAddressesOverride,omitempty"`
+	AdditionalHostIPSubnets        []string                     `json:"additionalHostIpSubnets,omitempty"`
+	PrefixDelegationWanInterfaceID string                       `json:"prefixDelegationWanInterfaceId,omitempty"`
 }
 
 type Network struct {
@@ -306,6 +333,7 @@ type Network struct {
 	Default               bool                      `json:"default,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
+	DeviceID              string                    `json:"deviceId,omitempty"`
 	ZoneID                string                    `json:"zoneId,omitempty"`
 	InternetAccessEnabled *bool                     `json:"internetAccessEnabled,omitempty"`
 	MdnsForwardingEnabled *bool                     `json:"mdnsForwardingEnabled,omitempty"`
@@ -327,6 +355,7 @@ type CreateNetworkRequest struct {
 	DhcpGuarding          *DhcpGuarding             `json:"dhcpGuarding,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
+	DeviceID              string                    `json:"deviceId,omitempty"`
 	ZoneID                string                    `json:"zoneId,omitempty"`
 	InternetAccessEnabled *bool                     `json:"internetAccessEnabled,omitempty"`
 	MdnsForwardingEnabled *bool                     `json:"mdnsForwardingEnabled,omitempty"`
@@ -349,6 +378,7 @@ type UpdateNetworkRequest struct {
 	DhcpGuarding          *DhcpGuarding             `json:"dhcpGuarding,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
+	DeviceID              string                    `json:"deviceId,omitempty"`
 	ZoneID                string                    `json:"zoneId,omitempty"`
 	InternetAccessEnabled *bool                     `json:"internetAccessEnabled,omitempty"`
 	MdnsForwardingEnabled *bool                     `json:"mdnsForwardingEnabled,omitempty"`
