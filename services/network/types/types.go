@@ -721,18 +721,143 @@ type FirewallPolicyAction struct {
 }
 
 type TrafficFilter struct {
-	Type             string                 `json:"type"`
-	PortFilter       *FirewallPortFilter    `json:"portFilter,omitempty"`
-	NetworkFilter    *FirewallNetworkFilter `json:"networkFilter,omitempty"`
-	MacAddressFilter string                 `json:"macAddressFilter,omitempty"`
+	Type                      string                             `json:"type"`
+	PortFilter                *FirewallPortFilter                `json:"portFilter,omitempty"`
+	NetworkFilter             *FirewallNetworkFilter             `json:"networkFilter,omitempty"`
+	MacAddressFilter          *FirewallMacAddressFilter          `json:"-"`
+	MacAddressFilterValue     *string                            `json:"-"`
+	IpAddressFilter           *FirewallIPAddressFilter           `json:"ipAddressFilter,omitempty"`
+	Ipv6IidFilter             *FirewallIPv6IIDFilter             `json:"ipv6IidFilter,omitempty"`
+	RegionFilter              *FirewallRegionFilter              `json:"regionFilter,omitempty"`
+	VpnServerFilter           *FirewallVPNServerFilter           `json:"vpnServerFilter,omitempty"`
+	SiteToSiteVpnTunnelFilter *FirewallSiteToSiteVPNTunnelFilter `json:"siteToSiteVpnTunnelFilter,omitempty"`
+}
+
+func (t TrafficFilter) MarshalJSON() ([]byte, error) {
+	type trafficFilterAlias struct {
+		Type                      string                             `json:"type"`
+		PortFilter                *FirewallPortFilter                `json:"portFilter,omitempty"`
+		NetworkFilter             *FirewallNetworkFilter             `json:"networkFilter,omitempty"`
+		MacAddressFilter          interface{}                        `json:"macAddressFilter,omitempty"`
+		IpAddressFilter           *FirewallIPAddressFilter           `json:"ipAddressFilter,omitempty"`
+		Ipv6IidFilter             *FirewallIPv6IIDFilter             `json:"ipv6IidFilter,omitempty"`
+		RegionFilter              *FirewallRegionFilter              `json:"regionFilter,omitempty"`
+		VpnServerFilter           *FirewallVPNServerFilter           `json:"vpnServerFilter,omitempty"`
+		SiteToSiteVpnTunnelFilter *FirewallSiteToSiteVPNTunnelFilter `json:"siteToSiteVpnTunnelFilter,omitempty"`
+	}
+	a := trafficFilterAlias{
+		Type:                      t.Type,
+		PortFilter:                t.PortFilter,
+		NetworkFilter:             t.NetworkFilter,
+		IpAddressFilter:           t.IpAddressFilter,
+		Ipv6IidFilter:             t.Ipv6IidFilter,
+		RegionFilter:              t.RegionFilter,
+		VpnServerFilter:           t.VpnServerFilter,
+		SiteToSiteVpnTunnelFilter: t.SiteToSiteVpnTunnelFilter,
+	}
+	if t.MacAddressFilter != nil {
+		a.MacAddressFilter = t.MacAddressFilter
+	} else if t.MacAddressFilterValue != nil {
+		a.MacAddressFilter = *t.MacAddressFilterValue
+	}
+	return json.Marshal(a)
+}
+
+func (t *TrafficFilter) UnmarshalJSON(data []byte) error {
+	type trafficFilterRaw struct {
+		Type                      string                             `json:"type"`
+		PortFilter                *FirewallPortFilter                `json:"portFilter,omitempty"`
+		NetworkFilter             *FirewallNetworkFilter             `json:"networkFilter,omitempty"`
+		MacAddressFilter          json.RawMessage                    `json:"macAddressFilter,omitempty"`
+		IpAddressFilter           *FirewallIPAddressFilter           `json:"ipAddressFilter,omitempty"`
+		Ipv6IidFilter             *FirewallIPv6IIDFilter             `json:"ipv6IidFilter,omitempty"`
+		RegionFilter              *FirewallRegionFilter              `json:"regionFilter,omitempty"`
+		VpnServerFilter           *FirewallVPNServerFilter           `json:"vpnServerFilter,omitempty"`
+		SiteToSiteVpnTunnelFilter *FirewallSiteToSiteVPNTunnelFilter `json:"siteToSiteVpnTunnelFilter,omitempty"`
+	}
+	var raw trafficFilterRaw
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	t.Type = raw.Type
+	t.PortFilter = raw.PortFilter
+	t.NetworkFilter = raw.NetworkFilter
+	t.IpAddressFilter = raw.IpAddressFilter
+	t.Ipv6IidFilter = raw.Ipv6IidFilter
+	t.RegionFilter = raw.RegionFilter
+	t.VpnServerFilter = raw.VpnServerFilter
+	t.SiteToSiteVpnTunnelFilter = raw.SiteToSiteVpnTunnelFilter
+	if len(raw.MacAddressFilter) > 0 {
+		if raw.MacAddressFilter[0] == '"' {
+			var s string
+			if err := json.Unmarshal(raw.MacAddressFilter, &s); err != nil {
+				return err
+			}
+			t.MacAddressFilterValue = &s
+		} else if raw.MacAddressFilter[0] == '{' {
+			var f FirewallMacAddressFilter
+			if err := json.Unmarshal(raw.MacAddressFilter, &f); err != nil {
+				return err
+			}
+			t.MacAddressFilter = &f
+		}
+	}
+	return nil
 }
 
 type FirewallPortFilter struct {
-	Ports []int `json:"ports,omitempty"`
+	Type                  string                   `json:"type"`
+	MatchOpposite         bool                     `json:"matchOpposite"`
+	Items                 []FirewallPortFilterItem `json:"items,omitempty"`
+	TrafficMatchingListId string                   `json:"trafficMatchingListId,omitempty"`
+}
+
+type FirewallPortFilterItem struct {
+	Type  string `json:"type"`
+	Value *int   `json:"value,omitempty"`
+	Start *int   `json:"start,omitempty"`
+	Stop  *int   `json:"stop,omitempty"`
 }
 
 type FirewallNetworkFilter struct {
-	NetworkIds []string `json:"networkIds,omitempty"`
+	NetworkIds    []string `json:"networkIds"`
+	MatchOpposite bool     `json:"matchOpposite"`
+}
+
+type FirewallMacAddressFilter struct {
+	MacAddresses []string `json:"macAddresses"`
+}
+
+type FirewallIPAddressFilter struct {
+	Type                  string                        `json:"type"`
+	MatchOpposite         bool                          `json:"matchOpposite"`
+	Items                 []FirewallIPAddressFilterItem `json:"items,omitempty"`
+	TrafficMatchingListId string                        `json:"trafficMatchingListId,omitempty"`
+}
+
+type FirewallIPAddressFilterItem struct {
+	Type  string `json:"type"`
+	Value string `json:"value,omitempty"`
+	Start string `json:"start,omitempty"`
+	Stop  string `json:"stop,omitempty"`
+}
+
+type FirewallIPv6IIDFilter struct {
+	Ipv6Iid       string `json:"ipv6Iid"`
+	MatchOpposite bool   `json:"matchOpposite"`
+}
+
+type FirewallRegionFilter struct {
+	Regions []string `json:"regions"`
+}
+
+type FirewallVPNServerFilter struct {
+	VpnServerIds  []string `json:"vpnServerIds"`
+	MatchOpposite bool     `json:"matchOpposite"`
+}
+
+type FirewallSiteToSiteVPNTunnelFilter struct {
+	SiteToSiteVpnTunnelId string `json:"siteToSiteVpnTunnelId"`
 }
 
 type FirewallPolicyEndpoint struct {
@@ -746,13 +871,20 @@ type FirewallIPProtocolScope struct {
 }
 
 type FirewallProtocolFilter struct {
-	Type          string            `json:"type"`
-	Protocol      *FirewallProtocol `json:"protocol,omitempty"`
-	MatchOpposite *bool             `json:"matchOpposite,omitempty"`
+	Type           string                  `json:"type"`
+	Protocol       *FirewallProtocol       `json:"protocol,omitempty"`
+	ProtocolNumber *int                    `json:"protocolNumber,omitempty"`
+	Preset         *FirewallProtocolPreset `json:"preset,omitempty"`
+	TypenameFilter string                  `json:"typenameFilter,omitempty"`
+	MatchOpposite  *bool                   `json:"matchOpposite,omitempty"`
 }
 
 type FirewallProtocol struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
+}
+
+type FirewallProtocolPreset struct {
+	Name string `json:"name"`
 }
 
 type FirewallSchedule struct {
