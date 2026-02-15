@@ -695,7 +695,7 @@ type ListFirewallZonesRequest struct {
 type CreateFirewallZoneRequest struct {
 	SiteID     string   `json:"-"`
 	Name       string   `json:"name"`
-	NetworkIDs []string `json:"networkIds,omitempty"`
+	NetworkIDs []string `json:"networkIds"`
 }
 
 type GetFirewallZoneRequest struct {
@@ -970,17 +970,26 @@ type PatchFirewallPolicyRequest struct {
 	LoggingEnabled bool   `json:"loggingEnabled"`
 }
 
+type OrderedFirewallPolicyIds struct {
+	BeforeSystemDefined []string `json:"beforeSystemDefined"`
+	AfterSystemDefined  []string `json:"afterSystemDefined"`
+}
+
 type FirewallPolicyOrdering struct {
-	PolicyIDs []string `json:"policyIds"`
+	OrderedFirewallPolicyIds OrderedFirewallPolicyIds `json:"orderedFirewallPolicyIds"`
 }
 
 type GetFirewallPolicyOrderingRequest struct {
-	SiteID string `json:"-"`
+	SiteID                    string `json:"-"`
+	SourceFirewallZoneId      string `json:"-"`
+	DestinationFirewallZoneId string `json:"-"`
 }
 
 type UpdateFirewallPolicyOrderingRequest struct {
-	SiteID    string   `json:"-"`
-	PolicyIDs []string `json:"policyIds"`
+	SiteID                    string                   `json:"-"`
+	SourceFirewallZoneId      string                   `json:"-"`
+	DestinationFirewallZoneId string                   `json:"-"`
+	OrderedFirewallPolicyIds  OrderedFirewallPolicyIds `json:"orderedFirewallPolicyIds"`
 }
 
 type ACLDeviceFilter struct {

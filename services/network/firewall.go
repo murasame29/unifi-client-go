@@ -100,7 +100,11 @@ func (c *Client) PatchFirewallPolicy(ctx context.Context, req types.PatchFirewal
 }
 
 func (c *Client) GetFirewallPolicyOrdering(ctx context.Context, req types.GetFirewallPolicyOrderingRequest) (*types.FirewallPolicyOrdering, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", req.SiteID), nil)
+	query := url.Values{}
+	query.Set("sourceFirewallZoneId", req.SourceFirewallZoneId)
+	query.Set("destinationFirewallZoneId", req.DestinationFirewallZoneId)
+
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +118,11 @@ func (c *Client) GetFirewallPolicyOrdering(ctx context.Context, req types.GetFir
 }
 
 func (c *Client) UpdateFirewallPolicyOrdering(ctx context.Context, req types.UpdateFirewallPolicyOrderingRequest) (*types.FirewallPolicyOrdering, error) {
-	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", req.SiteID), nil, req)
+	query := url.Values{}
+	query.Set("sourceFirewallZoneId", req.SourceFirewallZoneId)
+	query.Set("destinationFirewallZoneId", req.DestinationFirewallZoneId)
+
+	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", req.SiteID), query, req)
 	if err != nil {
 		return nil, err
 	}
