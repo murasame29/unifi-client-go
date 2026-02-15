@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -24,7 +23,7 @@ func (c *Client) GetDNSPolicy(ctx context.Context, siteID, policyID string) (*ty
 	return &result, nil
 }
 
-func (c *Client) UpdateDNSPolicy(ctx context.Context, siteID, policyID string, req json.RawMessage) (*types.DNSPolicy, error) {
+func (c *Client) UpdateDNSPolicy(ctx context.Context, siteID, policyID string, req types.UpdateDNSPolicyRequest) (*types.DNSPolicy, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", siteID, policyID), nil, req)
 	if err != nil {
 		return nil, err
@@ -65,7 +64,7 @@ func (c *Client) ListDNSPolicies(ctx context.Context, siteID string, params *typ
 	return &result, nil
 }
 
-func (c *Client) CreateDNSPolicy(ctx context.Context, siteID string, req json.RawMessage) (*types.DNSPolicy, error) {
+func (c *Client) CreateDNSPolicy(ctx context.Context, siteID string, req types.CreateDNSPolicyRequest) (*types.DNSPolicy, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies", siteID), nil, req)
 	if err != nil {
 		return nil, err

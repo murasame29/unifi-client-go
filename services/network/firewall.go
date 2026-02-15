@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -62,7 +61,7 @@ func (c *Client) GetFirewallPolicy(ctx context.Context, siteID, policyID string)
 	return &result, nil
 }
 
-func (c *Client) UpdateFirewallPolicy(ctx context.Context, siteID, policyID string, req json.RawMessage) (*types.FirewallPolicy, error) {
+func (c *Client) UpdateFirewallPolicy(ctx context.Context, siteID, policyID string, req types.UpdateFirewallPolicyRequest) (*types.FirewallPolicy, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/%s", siteID, policyID), nil, req)
 	if err != nil {
 		return nil, err
@@ -86,7 +85,7 @@ func (c *Client) DeleteFirewallPolicy(ctx context.Context, siteID, policyID stri
 	return nil
 }
 
-func (c *Client) PatchFirewallPolicy(ctx context.Context, siteID, policyID string, req json.RawMessage) (*types.FirewallPolicy, error) {
+func (c *Client) PatchFirewallPolicy(ctx context.Context, siteID, policyID string, req types.PatchFirewallPolicyRequest) (*types.FirewallPolicy, error) {
 	resp, err := c.client.Patch(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/%s", siteID, policyID), nil, req)
 	if err != nil {
 		return nil, err
@@ -100,32 +99,32 @@ func (c *Client) PatchFirewallPolicy(ctx context.Context, siteID, policyID strin
 	return &result, nil
 }
 
-func (c *Client) GetFirewallPolicyOrdering(ctx context.Context, siteID string) (json.RawMessage, error) {
+func (c *Client) GetFirewallPolicyOrdering(ctx context.Context, siteID string) (*types.FirewallPolicyOrdering, error) {
 	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", siteID), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var result json.RawMessage
+	var result types.FirewallPolicyOrdering
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
-func (c *Client) UpdateFirewallPolicyOrdering(ctx context.Context, siteID string, req json.RawMessage) (json.RawMessage, error) {
+func (c *Client) UpdateFirewallPolicyOrdering(ctx context.Context, siteID string, req types.UpdateFirewallPolicyOrderingRequest) (*types.FirewallPolicyOrdering, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies/ordering", siteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
 
-	var result json.RawMessage
+	var result types.FirewallPolicyOrdering
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 func (c *Client) ListFirewallZones(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.FirewallZone], error) {
@@ -176,7 +175,7 @@ func (c *Client) ListFirewallPolicies(ctx context.Context, siteID string, params
 	return &result, nil
 }
 
-func (c *Client) CreateFirewallPolicy(ctx context.Context, siteID string, req json.RawMessage) (*types.FirewallPolicy, error) {
+func (c *Client) CreateFirewallPolicy(ctx context.Context, siteID string, req types.CreateFirewallPolicyRequest) (*types.FirewallPolicy, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/firewall/policies", siteID), nil, req)
 	if err != nil {
 		return nil, err

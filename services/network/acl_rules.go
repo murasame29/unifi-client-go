@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -24,7 +23,7 @@ func (c *Client) GetACLRule(ctx context.Context, siteID, ruleID string) (*types.
 	return &result, nil
 }
 
-func (c *Client) UpdateACLRule(ctx context.Context, siteID, ruleID string, req json.RawMessage) (*types.ACLRule, error) {
+func (c *Client) UpdateACLRule(ctx context.Context, siteID, ruleID string, req types.UpdateACLRuleRequest) (*types.ACLRule, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/%s", siteID, ruleID), nil, req)
 	if err != nil {
 		return nil, err
@@ -48,32 +47,32 @@ func (c *Client) DeleteACLRule(ctx context.Context, siteID, ruleID string) error
 	return nil
 }
 
-func (c *Client) GetACLRuleOrdering(ctx context.Context, siteID string) (json.RawMessage, error) {
+func (c *Client) GetACLRuleOrdering(ctx context.Context, siteID string) (*types.ACLRuleOrdering, error) {
 	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/ordering", siteID), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var result json.RawMessage
+	var result types.ACLRuleOrdering
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
-func (c *Client) UpdateACLRuleOrdering(ctx context.Context, siteID string, req json.RawMessage) (json.RawMessage, error) {
+func (c *Client) UpdateACLRuleOrdering(ctx context.Context, siteID string, req types.UpdateACLRuleOrderingRequest) (*types.ACLRuleOrdering, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/ordering", siteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
 
-	var result json.RawMessage
+	var result types.ACLRuleOrdering
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 func (c *Client) ListACLRules(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.ACLRule], error) {
@@ -93,7 +92,7 @@ func (c *Client) ListACLRules(ctx context.Context, siteID string, params *types.
 	return &result, nil
 }
 
-func (c *Client) CreateACLRule(ctx context.Context, siteID string, req json.RawMessage) (*types.ACLRule, error) {
+func (c *Client) CreateACLRule(ctx context.Context, siteID string, req types.CreateACLRuleRequest) (*types.ACLRule, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules", siteID), nil, req)
 	if err != nil {
 		return nil, err

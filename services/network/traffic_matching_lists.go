@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -24,7 +23,7 @@ func (c *Client) GetTrafficMatchingList(ctx context.Context, siteID, listID stri
 	return &result, nil
 }
 
-func (c *Client) UpdateTrafficMatchingList(ctx context.Context, siteID, listID string, req json.RawMessage) (*types.TrafficMatchingList, error) {
+func (c *Client) UpdateTrafficMatchingList(ctx context.Context, siteID, listID string, req types.UpdateTrafficMatchingListRequest) (*types.TrafficMatchingList, error) {
 	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/traffic-matching-lists/%s", siteID, listID), nil, req)
 	if err != nil {
 		return nil, err
@@ -65,7 +64,7 @@ func (c *Client) ListTrafficMatchingLists(ctx context.Context, siteID string, pa
 	return &result, nil
 }
 
-func (c *Client) CreateTrafficMatchingList(ctx context.Context, siteID string, req json.RawMessage) (*types.TrafficMatchingList, error) {
+func (c *Client) CreateTrafficMatchingList(ctx context.Context, siteID string, req types.CreateTrafficMatchingListRequest) (*types.TrafficMatchingList, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/traffic-matching-lists", siteID), nil, req)
 	if err != nil {
 		return nil, err
