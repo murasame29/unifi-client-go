@@ -1158,7 +1158,14 @@ type DeleteDNSPolicyRequest struct {
 	PolicyID string `json:"-"`
 }
 
-type TrafficMatchingListItem struct {
+type PortMatchingItem struct {
+	Type  string `json:"type"`
+	Value *int   `json:"value,omitempty"`
+	Start *int   `json:"start,omitempty"`
+	Stop  *int   `json:"stop,omitempty"`
+}
+
+type IPAddressMatchingItem struct {
 	Type  string `json:"type"`
 	Value string `json:"value,omitempty"`
 	Start string `json:"start,omitempty"`
@@ -1166,10 +1173,77 @@ type TrafficMatchingListItem struct {
 }
 
 type TrafficMatchingList struct {
-	ID    string                    `json:"id"`
-	Name  string                    `json:"name"`
-	Type  string                    `json:"type"`
-	Items []TrafficMatchingListItem `json:"items,omitempty"`
+	ID               string                  `json:"id"`
+	Name             string                  `json:"name"`
+	Type             string                  `json:"type"`
+	PortItems        []PortMatchingItem      `json:"-"`
+	IPAddressItems   []IPAddressMatchingItem `json:"-"`
+	IPV6AddressItems []IPAddressMatchingItem `json:"-"`
+}
+
+func (t TrafficMatchingList) MarshalJSON() ([]byte, error) {
+	type trafficMatchingListAlias struct {
+		ID    string          `json:"id"`
+		Name  string          `json:"name"`
+		Type  string          `json:"type"`
+		Items json.RawMessage `json:"items,omitempty"`
+	}
+	a := trafficMatchingListAlias{ID: t.ID, Name: t.Name, Type: t.Type}
+	switch t.Type {
+	case "PORTS":
+		if len(t.PortItems) > 0 {
+			b, err := json.Marshal(t.PortItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV4_ADDRESSES":
+		if len(t.IPAddressItems) > 0 {
+			b, err := json.Marshal(t.IPAddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV6_ADDRESSES":
+		if len(t.IPV6AddressItems) > 0 {
+			b, err := json.Marshal(t.IPV6AddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	}
+	return json.Marshal(a)
+}
+
+func (t *TrafficMatchingList) UnmarshalJSON(data []byte) error {
+	type trafficMatchingListRaw struct {
+		ID    string          `json:"id"`
+		Name  string          `json:"name"`
+		Type  string          `json:"type"`
+		Items json.RawMessage `json:"items"`
+	}
+	var raw trafficMatchingListRaw
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	t.ID = raw.ID
+	t.Name = raw.Name
+	t.Type = raw.Type
+	if len(raw.Items) == 0 || string(raw.Items) == "null" {
+		return nil
+	}
+	switch raw.Type {
+	case "PORTS":
+		return json.Unmarshal(raw.Items, &t.PortItems)
+	case "IPV4_ADDRESSES":
+		return json.Unmarshal(raw.Items, &t.IPAddressItems)
+	case "IPV6_ADDRESSES":
+		return json.Unmarshal(raw.Items, &t.IPV6AddressItems)
+	}
+	return nil
 }
 
 type ListTrafficMatchingListsRequest struct {
@@ -1178,10 +1252,48 @@ type ListTrafficMatchingListsRequest struct {
 }
 
 type CreateTrafficMatchingListRequest struct {
-	SiteID string                    `json:"-"`
-	Type   string                    `json:"type"`
-	Name   string                    `json:"name"`
-	Items  []TrafficMatchingListItem `json:"items,omitempty"`
+	SiteID           string                  `json:"-"`
+	Type             string                  `json:"type"`
+	Name             string                  `json:"name"`
+	PortItems        []PortMatchingItem      `json:"-"`
+	IPAddressItems   []IPAddressMatchingItem `json:"-"`
+	IPV6AddressItems []IPAddressMatchingItem `json:"-"`
+}
+
+func (r CreateTrafficMatchingListRequest) MarshalJSON() ([]byte, error) {
+	type createAlias struct {
+		Type  string          `json:"type"`
+		Name  string          `json:"name"`
+		Items json.RawMessage `json:"items,omitempty"`
+	}
+	a := createAlias{Type: r.Type, Name: r.Name}
+	switch r.Type {
+	case "PORTS":
+		if len(r.PortItems) > 0 {
+			b, err := json.Marshal(r.PortItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV4_ADDRESSES":
+		if len(r.IPAddressItems) > 0 {
+			b, err := json.Marshal(r.IPAddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV6_ADDRESSES":
+		if len(r.IPV6AddressItems) > 0 {
+			b, err := json.Marshal(r.IPV6AddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	}
+	return json.Marshal(a)
 }
 
 type GetTrafficMatchingListRequest struct {
@@ -1190,11 +1302,49 @@ type GetTrafficMatchingListRequest struct {
 }
 
 type UpdateTrafficMatchingListRequest struct {
-	SiteID string                    `json:"-"`
-	ListID string                    `json:"-"`
-	Type   string                    `json:"type"`
-	Name   string                    `json:"name"`
-	Items  []TrafficMatchingListItem `json:"items,omitempty"`
+	SiteID           string                  `json:"-"`
+	ListID           string                  `json:"-"`
+	Type             string                  `json:"type"`
+	Name             string                  `json:"name"`
+	PortItems        []PortMatchingItem      `json:"-"`
+	IPAddressItems   []IPAddressMatchingItem `json:"-"`
+	IPV6AddressItems []IPAddressMatchingItem `json:"-"`
+}
+
+func (r UpdateTrafficMatchingListRequest) MarshalJSON() ([]byte, error) {
+	type updateAlias struct {
+		Type  string          `json:"type"`
+		Name  string          `json:"name"`
+		Items json.RawMessage `json:"items,omitempty"`
+	}
+	a := updateAlias{Type: r.Type, Name: r.Name}
+	switch r.Type {
+	case "PORTS":
+		if len(r.PortItems) > 0 {
+			b, err := json.Marshal(r.PortItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV4_ADDRESSES":
+		if len(r.IPAddressItems) > 0 {
+			b, err := json.Marshal(r.IPAddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	case "IPV6_ADDRESSES":
+		if len(r.IPV6AddressItems) > 0 {
+			b, err := json.Marshal(r.IPV6AddressItems)
+			if err != nil {
+				return nil, err
+			}
+			a.Items = b
+		}
+	}
+	return json.Marshal(a)
 }
 
 type DeleteTrafficMatchingListRequest struct {
