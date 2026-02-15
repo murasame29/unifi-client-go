@@ -423,10 +423,38 @@ type WifiSecurityConfiguration struct {
 	GroupRekeyIntervalSeconds *int                     `json:"groupRekeyIntervalSeconds,omitempty"`
 	FastRoamingEnabled        *bool                    `json:"fastRoamingEnabled,omitempty"`
 	PmfMode                   string                   `json:"pmfMode,omitempty"`
+	PresharedKeys             []WifiPresharedKey       `json:"presharedKeys,omitempty"`
+	SaeConfiguration          *SaeConfiguration        `json:"saeConfiguration,omitempty"`
+	CoaEnabled                *bool                    `json:"coaEnabled,omitempty"`
+	SecurityMode              string                   `json:"securityMode,omitempty"`
+	Wpa3FastRoamingEnabled    *bool                    `json:"wpa3FastRoamingEnabled,omitempty"`
+}
+
+type WifiPresharedKey struct {
+	Name       string `json:"name,omitempty"`
+	Passphrase string `json:"passphrase,omitempty"`
+}
+
+type SaeConfiguration struct {
+	AnticloggingThresholdSeconds int `json:"anticloggingThresholdSeconds"`
+	SyncTimeSeconds              int `json:"syncTimeSeconds"`
 }
 
 type WifiRadiusConfiguration struct {
-	RadiusProfileID string `json:"radiusProfileId,omitempty"`
+	ProfileID                      string                          `json:"profileId"`
+	NasId                          *WifiRadiusNasIdConfiguration   `json:"nasId,omitempty"`
+	MacAuthenticationConfiguration *WifiRadiusMacAuthConfiguration `json:"macAuthenticationConfiguration,omitempty"`
+}
+
+type WifiRadiusNasIdConfiguration struct {
+	Type  string `json:"type,omitempty"`
+	Value string `json:"value,omitempty"`
+}
+
+type WifiRadiusMacAuthConfiguration struct {
+	Enabled          *bool  `json:"enabled,omitempty"`
+	PasswordType     string `json:"passwordType,omitempty"`
+	MacAddressFormat string `json:"macAddressFormat,omitempty"`
 }
 
 type BroadcastingDeviceFilter struct {
@@ -436,11 +464,19 @@ type BroadcastingDeviceFilter struct {
 }
 
 type MdnsProxyConfiguration struct {
-	Mode string `json:"mode"`
+	Mode     string            `json:"mode"`
+	Policies []MdnsProxyPolicy `json:"policies,omitempty"`
+}
+
+type MdnsProxyPolicy struct {
+	Type      string   `json:"type,omitempty"`
+	Services  []string `json:"services,omitempty"`
+	NetworkID string   `json:"networkId,omitempty"`
 }
 
 type MulticastFilteringPolicy struct {
-	Action string `json:"action"`
+	Action                 string   `json:"action"`
+	SourceMacAddressFilter []string `json:"sourceMacAddressFilter,omitempty"`
 }
 
 type BasicDataRateKbpsByFrequencyGHz struct {
@@ -454,8 +490,14 @@ type ClientFilteringPolicy struct {
 }
 
 type BlackoutScheduleDay struct {
-	Type string `json:"type"`
-	Day  string `json:"day"`
+	Type       string                      `json:"type"`
+	Day        string                      `json:"day"`
+	TimeRanges []BlackoutScheduleTimeRange `json:"timeRanges,omitempty"`
+}
+
+type BlackoutScheduleTimeRange struct {
+	Start string `json:"start,omitempty"`
+	Stop  string `json:"stop,omitempty"`
 }
 
 type BlackoutScheduleConfiguration struct {
