@@ -738,7 +738,7 @@ func (t TrafficFilter) MarshalJSON() ([]byte, error) {
 		Type                      string                             `json:"type"`
 		PortFilter                *FirewallPortFilter                `json:"portFilter,omitempty"`
 		NetworkFilter             *FirewallNetworkFilter             `json:"networkFilter,omitempty"`
-		MacAddressFilter          interface{}                        `json:"macAddressFilter,omitempty"`
+		MacAddressFilter          any                                `json:"macAddressFilter,omitempty"`
 		IpAddressFilter           *FirewallIPAddressFilter           `json:"ipAddressFilter,omitempty"`
 		Ipv6IidFilter             *FirewallIPv6IIDFilter             `json:"ipv6IidFilter,omitempty"`
 		RegionFilter              *FirewallRegionFilter              `json:"regionFilter,omitempty"`
@@ -880,7 +880,8 @@ type FirewallProtocolFilter struct {
 }
 
 type FirewallProtocol struct {
-	Name string `json:"name"`
+	Name           string `json:"name"`
+	TypenameFilter string `json:"typenameFilter,omitempty"`
 }
 
 type FirewallProtocolPreset struct {
@@ -964,19 +965,9 @@ type DeleteFirewallPolicyRequest struct {
 }
 
 type PatchFirewallPolicyRequest struct {
-	SiteID                string                   `json:"-"`
-	PolicyID              string                   `json:"-"`
-	Enabled               *bool                    `json:"enabled,omitempty"`
-	Name                  string                   `json:"name,omitempty"`
-	Description           string                   `json:"description,omitempty"`
-	Action                *FirewallPolicyAction    `json:"action,omitempty"`
-	Source                *FirewallPolicyEndpoint  `json:"source,omitempty"`
-	Destination           *FirewallPolicyEndpoint  `json:"destination,omitempty"`
-	IPProtocolScope       *FirewallIPProtocolScope `json:"ipProtocolScope,omitempty"`
-	ConnectionStateFilter []string                 `json:"connectionStateFilter,omitempty"`
-	IpsecFilter           string                   `json:"ipsecFilter,omitempty"`
-	LoggingEnabled        *bool                    `json:"loggingEnabled,omitempty"`
-	Schedule              *FirewallSchedule        `json:"schedule,omitempty"`
+	SiteID         string `json:"-"`
+	PolicyID       string `json:"-"`
+	LoggingEnabled bool   `json:"loggingEnabled"`
 }
 
 type FirewallPolicyOrdering struct {
