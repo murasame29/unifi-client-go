@@ -417,25 +417,22 @@ type WifiNetworkReference struct {
 }
 
 type WifiSecurityConfiguration struct {
-	Type                string                   `json:"type"`
-	RadiusConfiguration *WifiRadiusConfiguration `json:"radiusConfiguration,omitempty"`
-	Password            string                   `json:"password,omitempty"`
-	SaeTransitionMode   bool                     `json:"saeTransitionMode,omitempty"`
-	Protocols           *WifiSecurityProtocols   `json:"protocols,omitempty"`
+	Type                      string                   `json:"type"`
+	RadiusConfiguration       *WifiRadiusConfiguration `json:"radiusConfiguration,omitempty"`
+	Passphrase                string                   `json:"passphrase,omitempty"`
+	GroupRekeyIntervalSeconds *int                     `json:"groupRekeyIntervalSeconds,omitempty"`
+	FastRoamingEnabled        *bool                    `json:"fastRoamingEnabled,omitempty"`
+	PmfMode                   string                   `json:"pmfMode,omitempty"`
 }
 
 type WifiRadiusConfiguration struct {
 	RadiusProfileID string `json:"radiusProfileId,omitempty"`
 }
 
-type WifiSecurityProtocols struct {
-	Rsn bool `json:"rsn,omitempty"`
-	Wpa bool `json:"wpa,omitempty"`
-}
-
 type BroadcastingDeviceFilter struct {
-	Type      string   `json:"type"`
-	DeviceIDs []string `json:"deviceIds,omitempty"`
+	Type         string   `json:"type"`
+	DeviceIDs    []string `json:"deviceIds,omitempty"`
+	DeviceTagIDs []string `json:"deviceTagIds,omitempty"`
 }
 
 type MdnsProxyConfiguration struct {
@@ -473,6 +470,7 @@ type WifiHotspotConfiguration struct {
 type DtimPeriodByFrequencyGHzOverride struct {
 	TwoPointFour *int `json:"2.4,omitempty"`
 	Five         *int `json:"5,omitempty"`
+	Six          *int `json:"6,omitempty"`
 }
 
 type WifiBroadcast struct {
@@ -651,7 +649,18 @@ type FirewallPolicyAction struct {
 }
 
 type TrafficFilter struct {
-	Type string `json:"type"`
+	Type             string                 `json:"type"`
+	PortFilter       *FirewallPortFilter    `json:"portFilter,omitempty"`
+	NetworkFilter    *FirewallNetworkFilter `json:"networkFilter,omitempty"`
+	MacAddressFilter string                 `json:"macAddressFilter,omitempty"`
+}
+
+type FirewallPortFilter struct {
+	Ports []int `json:"ports,omitempty"`
+}
+
+type FirewallNetworkFilter struct {
+	NetworkIds []string `json:"networkIds,omitempty"`
 }
 
 type FirewallPolicyEndpoint struct {
@@ -660,11 +669,28 @@ type FirewallPolicyEndpoint struct {
 }
 
 type FirewallIPProtocolScope struct {
-	IPVersion string `json:"ipVersion"`
+	IPVersion      string                  `json:"ipVersion"`
+	ProtocolFilter *FirewallProtocolFilter `json:"protocolFilter,omitempty"`
+}
+
+type FirewallProtocolFilter struct {
+	Type          string            `json:"type"`
+	Protocol      *FirewallProtocol `json:"protocol,omitempty"`
+	MatchOpposite *bool             `json:"matchOpposite,omitempty"`
+}
+
+type FirewallProtocol struct {
+	Name string `json:"name,omitempty"`
 }
 
 type FirewallSchedule struct {
-	Mode string `json:"mode"`
+	Mode       string              `json:"mode"`
+	TimeFilter *FirewallTimeFilter `json:"timeFilter,omitempty"`
+}
+
+type FirewallTimeFilter struct {
+	StartTime string `json:"startTime,omitempty"`
+	StopTime  string `json:"stopTime,omitempty"`
 }
 
 type FirewallPolicy struct {
@@ -765,9 +791,12 @@ type ACLDeviceFilter struct {
 }
 
 type ACLEndpointFilter struct {
-	NetworkID  string   `json:"networkId,omitempty"`
-	IPAddress  string   `json:"ipAddress,omitempty"`
-	PortRanges []string `json:"portRanges,omitempty"`
+	Type                 string   `json:"type"`
+	IpAddressesOrSubnets []string `json:"ipAddressesOrSubnets,omitempty"`
+	NetworkIds           []string `json:"networkIds,omitempty"`
+	PortFilter           []int    `json:"portFilter,omitempty"`
+	MacAddresses         []string `json:"macAddresses,omitempty"`
+	PrefixLength         *int     `json:"prefixLength,omitempty"`
 }
 
 type ACLRule struct {
@@ -783,6 +812,7 @@ type ACLRule struct {
 	DestinationFilter     *ACLEndpointFilter `json:"destinationFilter,omitempty"`
 	Metadata              *EntityMetadata    `json:"metadata,omitempty"`
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
+	NetworkIdFilter       string             `json:"networkIdFilter,omitempty"`
 }
 
 type ListACLRulesRequest struct {
@@ -802,6 +832,7 @@ type CreateACLRuleRequest struct {
 	SourceFilter          *ACLEndpointFilter `json:"sourceFilter,omitempty"`
 	DestinationFilter     *ACLEndpointFilter `json:"destinationFilter,omitempty"`
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
+	NetworkIdFilter       string             `json:"networkIdFilter,omitempty"`
 }
 
 type GetACLRuleRequest struct {
@@ -821,6 +852,7 @@ type UpdateACLRuleRequest struct {
 	SourceFilter          *ACLEndpointFilter `json:"sourceFilter,omitempty"`
 	DestinationFilter     *ACLEndpointFilter `json:"destinationFilter,omitempty"`
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
+	NetworkIdFilter       string             `json:"networkIdFilter,omitempty"`
 }
 
 type DeleteACLRuleRequest struct {
@@ -842,13 +874,24 @@ type UpdateACLRuleOrderingRequest struct {
 }
 
 type DNSPolicy struct {
-	Type        string          `json:"type"`
-	ID          string          `json:"id,omitempty"`
-	Enabled     bool            `json:"enabled"`
-	Metadata    *EntityMetadata `json:"metadata,omitempty"`
-	Domain      string          `json:"domain,omitempty"`
-	IPv4Address string          `json:"ipv4Address,omitempty"`
-	TTLSeconds  int             `json:"ttlSeconds,omitempty"`
+	Type             string          `json:"type"`
+	ID               string          `json:"id,omitempty"`
+	Enabled          bool            `json:"enabled"`
+	Metadata         *EntityMetadata `json:"metadata,omitempty"`
+	Domain           string          `json:"domain,omitempty"`
+	IPv4Address      string          `json:"ipv4Address,omitempty"`
+	IPv6Address      string          `json:"ipv6Address,omitempty"`
+	TargetDomain     string          `json:"targetDomain,omitempty"`
+	MailServerDomain string          `json:"mailServerDomain,omitempty"`
+	Priority         *int            `json:"priority,omitempty"`
+	Text             string          `json:"text,omitempty"`
+	ServerDomain     string          `json:"serverDomain,omitempty"`
+	Service          string          `json:"service,omitempty"`
+	Protocol         string          `json:"protocol,omitempty"`
+	Port             *int            `json:"port,omitempty"`
+	Weight           *int            `json:"weight,omitempty"`
+	IPAddress        string          `json:"ipAddress,omitempty"`
+	TTLSeconds       *int            `json:"ttlSeconds,omitempty"`
 }
 
 type ListDNSPoliciesRequest struct {
@@ -857,12 +900,23 @@ type ListDNSPoliciesRequest struct {
 }
 
 type CreateDNSPolicyRequest struct {
-	SiteID      string `json:"-"`
-	Type        string `json:"type"`
-	Enabled     bool   `json:"enabled"`
-	Domain      string `json:"domain,omitempty"`
-	IPv4Address string `json:"ipv4Address,omitempty"`
-	TTLSeconds  int    `json:"ttlSeconds,omitempty"`
+	SiteID           string `json:"-"`
+	Type             string `json:"type"`
+	Enabled          bool   `json:"enabled"`
+	Domain           string `json:"domain,omitempty"`
+	IPv4Address      string `json:"ipv4Address,omitempty"`
+	IPv6Address      string `json:"ipv6Address,omitempty"`
+	TargetDomain     string `json:"targetDomain,omitempty"`
+	MailServerDomain string `json:"mailServerDomain,omitempty"`
+	Priority         *int   `json:"priority,omitempty"`
+	Text             string `json:"text,omitempty"`
+	ServerDomain     string `json:"serverDomain,omitempty"`
+	Service          string `json:"service,omitempty"`
+	Protocol         string `json:"protocol,omitempty"`
+	Port             *int   `json:"port,omitempty"`
+	Weight           *int   `json:"weight,omitempty"`
+	IPAddress        string `json:"ipAddress,omitempty"`
+	TTLSeconds       *int   `json:"ttlSeconds,omitempty"`
 }
 
 type GetDNSPolicyRequest struct {
@@ -871,13 +925,24 @@ type GetDNSPolicyRequest struct {
 }
 
 type UpdateDNSPolicyRequest struct {
-	SiteID      string `json:"-"`
-	PolicyID    string `json:"-"`
-	Type        string `json:"type"`
-	Enabled     bool   `json:"enabled"`
-	Domain      string `json:"domain,omitempty"`
-	IPv4Address string `json:"ipv4Address,omitempty"`
-	TTLSeconds  int    `json:"ttlSeconds,omitempty"`
+	SiteID           string `json:"-"`
+	PolicyID         string `json:"-"`
+	Type             string `json:"type"`
+	Enabled          bool   `json:"enabled"`
+	Domain           string `json:"domain,omitempty"`
+	IPv4Address      string `json:"ipv4Address,omitempty"`
+	IPv6Address      string `json:"ipv6Address,omitempty"`
+	TargetDomain     string `json:"targetDomain,omitempty"`
+	MailServerDomain string `json:"mailServerDomain,omitempty"`
+	Priority         *int   `json:"priority,omitempty"`
+	Text             string `json:"text,omitempty"`
+	ServerDomain     string `json:"serverDomain,omitempty"`
+	Service          string `json:"service,omitempty"`
+	Protocol         string `json:"protocol,omitempty"`
+	Port             *int   `json:"port,omitempty"`
+	Weight           *int   `json:"weight,omitempty"`
+	IPAddress        string `json:"ipAddress,omitempty"`
+	TTLSeconds       *int   `json:"ttlSeconds,omitempty"`
 }
 
 type DeleteDNSPolicyRequest struct {
