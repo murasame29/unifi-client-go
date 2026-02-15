@@ -1158,12 +1158,18 @@ type DeleteDNSPolicyRequest struct {
 	PolicyID string `json:"-"`
 }
 
+type TrafficMatchingListItem struct {
+	Type  string `json:"type"`
+	Value string `json:"value,omitempty"`
+	Start string `json:"start,omitempty"`
+	Stop  string `json:"stop,omitempty"`
+}
+
 type TrafficMatchingList struct {
-	ID       string          `json:"id,omitempty"`
-	Name     string          `json:"name"`
-	Type     string          `json:"type,omitempty"`
-	Entries  []string        `json:"entries,omitempty"`
-	Metadata *EntityMetadata `json:"metadata,omitempty"`
+	ID    string                    `json:"id"`
+	Name  string                    `json:"name"`
+	Type  string                    `json:"type"`
+	Items []TrafficMatchingListItem `json:"items,omitempty"`
 }
 
 type ListTrafficMatchingListsRequest struct {
@@ -1172,10 +1178,10 @@ type ListTrafficMatchingListsRequest struct {
 }
 
 type CreateTrafficMatchingListRequest struct {
-	SiteID  string   `json:"-"`
-	Name    string   `json:"name"`
-	Type    string   `json:"type,omitempty"`
-	Entries []string `json:"entries,omitempty"`
+	SiteID string                    `json:"-"`
+	Type   string                    `json:"type"`
+	Name   string                    `json:"name"`
+	Items  []TrafficMatchingListItem `json:"items,omitempty"`
 }
 
 type GetTrafficMatchingListRequest struct {
@@ -1184,11 +1190,11 @@ type GetTrafficMatchingListRequest struct {
 }
 
 type UpdateTrafficMatchingListRequest struct {
-	SiteID  string   `json:"-"`
-	ListID  string   `json:"-"`
-	Name    string   `json:"name"`
-	Type    string   `json:"type,omitempty"`
-	Entries []string `json:"entries,omitempty"`
+	SiteID string                    `json:"-"`
+	ListID string                    `json:"-"`
+	Type   string                    `json:"type"`
+	Name   string                    `json:"name"`
+	Items  []TrafficMatchingListItem `json:"items,omitempty"`
 }
 
 type DeleteTrafficMatchingListRequest struct {
