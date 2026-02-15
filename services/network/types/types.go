@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type PaginatedResponse[T any] struct {
 	Offset     int `json:"offset"`
 	Limit      int `json:"limit"`
@@ -33,8 +35,8 @@ type DeviceUplink struct {
 }
 
 type DeviceFeatures struct {
-	Switching   interface{} `json:"switching"`
-	AccessPoint interface{} `json:"accessPoint"`
+	Switching   json.RawMessage `json:"switching"`
+	AccessPoint json.RawMessage `json:"accessPoint"`
 }
 
 type PortPoE struct {
