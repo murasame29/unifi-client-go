@@ -23,7 +23,7 @@ func (c *Client) ExecuteClientAction(ctx context.Context, req types.ExecuteClien
 	return &result, nil
 }
 
-func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnectedClientsRequest) (*types.PaginatedResponse[types.ConnectedClient], error) {
+func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnectedClientsRequest) (*types.PaginatedResponse[types.ConnectedClientOverview], error) {
 	query := url.Values{}
 	applyPagination(query, req.Pagination)
 
@@ -32,7 +32,7 @@ func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnect
 		return nil, err
 	}
 
-	var result types.PaginatedResponse[types.ConnectedClient]
+	var result types.PaginatedResponse[types.ConnectedClientOverview]
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
@@ -40,13 +40,13 @@ func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnect
 	return &result, nil
 }
 
-func (c *Client) GetConnectedClientDetails(ctx context.Context, req types.GetConnectedClientDetailsRequest) (*types.ConnectedClient, error) {
+func (c *Client) GetConnectedClientDetails(ctx context.Context, req types.GetConnectedClientDetailsRequest) (*types.ConnectedClientDetails, error) {
 	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s", req.SiteID, req.ClientID), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var result types.ConnectedClient
+	var result types.ConnectedClientDetails
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}

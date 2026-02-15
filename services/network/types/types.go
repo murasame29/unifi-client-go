@@ -171,14 +171,32 @@ type PendingDevice struct {
 	AdoptionTargetSiteIds []string `json:"adoptionTargetSiteIds,omitempty"`
 }
 
-type ConnectedClient struct {
-	ID         string `json:"id"`
-	MacAddress string `json:"macAddress"`
-	IPAddress  string `json:"ipAddress"`
-	Name       string `json:"name,omitempty"`
-	Type       string `json:"type"`
-	Hostname   string `json:"hostname,omitempty"`
-	Connected  bool   `json:"connected"`
+type ClientAccess struct {
+	Type          string              `json:"type"`
+	Authorized    *bool               `json:"authorized,omitempty"`
+	Authorization *GuestAuthorization `json:"authorization,omitempty"`
+}
+
+type ConnectedClientOverview struct {
+	Type           string        `json:"type"`
+	ID             string        `json:"id"`
+	Name           string        `json:"name"`
+	ConnectedAt    string        `json:"connectedAt,omitempty"`
+	IPAddress      string        `json:"ipAddress,omitempty"`
+	Access         *ClientAccess `json:"access"`
+	MacAddress     string        `json:"macAddress,omitempty"`
+	UplinkDeviceID string        `json:"uplinkDeviceId,omitempty"`
+}
+
+type ConnectedClientDetails struct {
+	Type           string        `json:"type"`
+	ID             string        `json:"id"`
+	Name           string        `json:"name"`
+	ConnectedAt    string        `json:"connectedAt,omitempty"`
+	IPAddress      string        `json:"ipAddress,omitempty"`
+	Access         *ClientAccess `json:"access"`
+	MacAddress     string        `json:"macAddress,omitempty"`
+	UplinkDeviceID string        `json:"uplinkDeviceId,omitempty"`
 }
 
 type ListConnectedClientsRequest struct {
