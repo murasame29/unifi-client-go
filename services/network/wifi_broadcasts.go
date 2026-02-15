@@ -38,7 +38,12 @@ func (c *Client) UpdateWifiBroadcast(ctx context.Context, req types.UpdateWifiBr
 }
 
 func (c *Client) DeleteWifiBroadcast(ctx context.Context, req types.DeleteWifiBroadcastRequest) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/wifi/broadcasts/%s", req.SiteID, req.WifiBroadcastID), nil)
+	query := url.Values{}
+	if req.Force != nil && *req.Force {
+		query.Set("force", "true")
+	}
+
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/wifi/broadcasts/%s", req.SiteID, req.WifiBroadcastID), query)
 	if err != nil {
 		return err
 	}

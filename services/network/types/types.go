@@ -320,6 +320,8 @@ type NetworkIPv6Configuration struct {
 	DnsServerIPAddressesOverride   []string                     `json:"dnsServerIpAddressesOverride,omitempty"`
 	AdditionalHostIPSubnets        []string                     `json:"additionalHostIpSubnets,omitempty"`
 	PrefixDelegationWanInterfaceID string                       `json:"prefixDelegationWanInterfaceId,omitempty"`
+	HostIPAddress                  string                       `json:"hostIpAddress,omitempty"`
+	PrefixLength                   string                       `json:"prefixLength,omitempty"`
 }
 
 type Network struct {
@@ -395,6 +397,7 @@ type DeleteNetworkRequest struct {
 type GetNetworkReferencesRequest struct {
 	SiteID    string `json:"-"`
 	NetworkID string `json:"-"`
+	Force     *bool  `json:"-"`
 }
 
 type NetworkReferenceDetail struct {
@@ -431,8 +434,8 @@ type WifiSecurityConfiguration struct {
 }
 
 type WifiPresharedKey struct {
-	Name       string `json:"name,omitempty"`
-	Passphrase string `json:"passphrase,omitempty"`
+	Network    json.RawMessage `json:"network,omitempty"`
+	Passphrase string          `json:"passphrase,omitempty"`
 }
 
 type SaeConfiguration struct {
@@ -447,8 +450,9 @@ type WifiRadiusConfiguration struct {
 }
 
 type WifiRadiusNasIdConfiguration struct {
-	Type  string `json:"type,omitempty"`
-	Value string `json:"value,omitempty"`
+	Type   string `json:"type,omitempty"`
+	Source string `json:"source,omitempty"`
+	Value  string `json:"value,omitempty"`
 }
 
 type WifiRadiusMacAuthConfiguration struct {
@@ -468,10 +472,17 @@ type MdnsProxyConfiguration struct {
 	Policies []MdnsProxyPolicy `json:"policies,omitempty"`
 }
 
+type MdnsProxyPolicyServiceFilter struct {
+	Type       string `json:"type,omitempty"`
+	Name       string `json:"name,omitempty"`
+	TypeDomain string `json:"typeDomain,omitempty"`
+}
+
 type MdnsProxyPolicy struct {
-	Type      string   `json:"type,omitempty"`
-	Services  []string `json:"services,omitempty"`
-	NetworkID string   `json:"networkId,omitempty"`
+	Action             string                         `json:"action,omitempty"`
+	DeviceFilter       BroadcastingDeviceFilter       `json:"deviceFilter,omitempty"`
+	ServiceFilter      []MdnsProxyPolicyServiceFilter `json:"serviceFilter,omitempty"`
+	BridgingNetworkIDs []string                       `json:"bridgingNetworkIds,omitempty"`
 }
 
 type MulticastFilteringPolicy struct {
@@ -496,8 +507,8 @@ type BlackoutScheduleDay struct {
 }
 
 type BlackoutScheduleTimeRange struct {
-	Start string `json:"start,omitempty"`
-	Stop  string `json:"stop,omitempty"`
+	StartTime string `json:"startTime,omitempty"`
+	EndTime   string `json:"endTime,omitempty"`
 }
 
 type BlackoutScheduleConfiguration struct {
@@ -611,6 +622,7 @@ type UpdateWifiBroadcastRequest struct {
 type DeleteWifiBroadcastRequest struct {
 	SiteID          string `json:"-"`
 	WifiBroadcastID string `json:"-"`
+	Force           *bool  `json:"-"`
 }
 
 type Voucher struct {
