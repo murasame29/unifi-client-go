@@ -756,8 +756,11 @@ type FirewallProtocol struct {
 }
 
 type FirewallSchedule struct {
-	Mode       string              `json:"mode"`
-	TimeFilter *FirewallTimeFilter `json:"timeFilter,omitempty"`
+	Mode         string              `json:"mode"`
+	TimeFilter   *FirewallTimeFilter `json:"timeFilter,omitempty"`
+	RepeatOnDays []string            `json:"repeatOnDays,omitempty"`
+	StartDate    string              `json:"startDate,omitempty"`
+	StopDate     string              `json:"stopDate,omitempty"`
 }
 
 type FirewallTimeFilter struct {
