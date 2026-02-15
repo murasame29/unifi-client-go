@@ -26,28 +26,37 @@ func (c *Client) ListVouchers(ctx context.Context, req types.ListVouchersRequest
 	return &result, nil
 }
 
-func (c *Client) GenerateVouchers(ctx context.Context, req types.GenerateVouchersRequest) ([]types.Voucher, error) {
+func (c *Client) GenerateVouchers(ctx context.Context, req types.GenerateVouchersRequest) (*types.GenerateVouchersResponse, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []types.Voucher
+	var result types.GenerateVouchersResponse
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
-func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersRequest) error {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/delete", req.SiteID), nil, req)
-	if err != nil {
-		return err
+func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersRequest) (*types.DeleteVouchersResponse, error) {
+	query := url.Values{}
+	if req.Filter != "" {
+		query.Set("filter", req.Filter)
 	}
 
-	_ = resp.Body.Close()
-	return nil
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", req.SiteID), query)
+	if err != nil {
+		return nil, err
+	}
+
+	var result types.DeleteVouchersResponse
+	if err := internal.Decode(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
 
 func (c *Client) GetVoucherDetails(ctx context.Context, req types.GetVoucherDetailsRequest) (*types.Voucher, error) {

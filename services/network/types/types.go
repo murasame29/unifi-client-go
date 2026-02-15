@@ -614,12 +614,19 @@ type DeleteWifiBroadcastRequest struct {
 }
 
 type Voucher struct {
-	ID        string `json:"id,omitempty"`
-	Code      string `json:"code,omitempty"`
-	Duration  int    `json:"duration,omitempty"`
-	DataQuota int    `json:"dataQuota,omitempty"`
-	Note      string `json:"note,omitempty"`
-	Used      bool   `json:"used,omitempty"`
+	ID                   string `json:"id"`
+	CreatedAt            string `json:"createdAt"`
+	Name                 string `json:"name"`
+	Code                 string `json:"code"`
+	AuthorizedGuestLimit *int   `json:"authorizedGuestLimit,omitempty"`
+	AuthorizedGuestCount int    `json:"authorizedGuestCount"`
+	ActivatedAt          string `json:"activatedAt,omitempty"`
+	ExpiresAt            string `json:"expiresAt,omitempty"`
+	Expired              bool   `json:"expired"`
+	TimeLimitMinutes     int    `json:"timeLimitMinutes"`
+	DataUsageLimitMBytes *int   `json:"dataUsageLimitMBytes,omitempty"`
+	RxRateLimitKbps      *int   `json:"rxRateLimitKbps,omitempty"`
+	TxRateLimitKbps      *int   `json:"txRateLimitKbps,omitempty"`
 }
 
 type ListVouchersRequest struct {
@@ -628,11 +635,18 @@ type ListVouchersRequest struct {
 }
 
 type GenerateVouchersRequest struct {
-	SiteID    string `json:"-"`
-	Count     int    `json:"count"`
-	Duration  int    `json:"duration"`
-	DataQuota int    `json:"dataQuota,omitempty"`
-	Note      string `json:"note,omitempty"`
+	SiteID               string `json:"-"`
+	Count                *int   `json:"count,omitempty"`
+	Name                 string `json:"name"`
+	AuthorizedGuestLimit *int   `json:"authorizedGuestLimit,omitempty"`
+	TimeLimitMinutes     int    `json:"timeLimitMinutes"`
+	DataUsageLimitMBytes *int   `json:"dataUsageLimitMBytes,omitempty"`
+	RxRateLimitKbps      *int   `json:"rxRateLimitKbps,omitempty"`
+	TxRateLimitKbps      *int   `json:"txRateLimitKbps,omitempty"`
+}
+
+type GenerateVouchersResponse struct {
+	Vouchers []Voucher `json:"vouchers"`
 }
 
 type GetVoucherDetailsRequest struct {
@@ -646,8 +660,12 @@ type DeleteVoucherRequest struct {
 }
 
 type DeleteVouchersRequest struct {
-	SiteID string   `json:"-"`
-	IDs    []string `json:"ids"`
+	SiteID string `json:"-"`
+	Filter string `json:"-"`
+}
+
+type DeleteVouchersResponse struct {
+	VouchersDeleted int `json:"vouchersDeleted"`
 }
 
 type FirewallZone struct {
