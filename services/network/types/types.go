@@ -30,6 +30,10 @@ type Site struct {
 	Name              string `json:"name"`
 }
 
+type ListSitesRequest struct {
+	Pagination *PaginationParams `json:"-"`
+}
+
 type DeviceUplink struct {
 	DeviceID string `json:"deviceId"`
 }
@@ -85,17 +89,48 @@ type AdoptedDevice struct {
 	Interfaces        *DeviceInterfaces `json:"interfaces"`
 }
 
+type ListAdoptedDevicesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type AdoptDeviceRequest struct {
+	SiteID            string `json:"-"`
 	MacAddress        string `json:"macAddress"`
 	IgnoreDeviceLimit bool   `json:"ignoreDeviceLimit"`
 }
 
-type PortActionRequest struct {
-	Action string `json:"action"`
+type ExecutePortActionRequest struct {
+	SiteID   string `json:"-"`
+	DeviceID string `json:"-"`
+	PortIdx  int    `json:"-"`
+	Action   string `json:"action"`
 }
 
-type DeviceActionRequest struct {
-	Action string `json:"action"`
+type ExecuteDeviceActionRequest struct {
+	SiteID   string `json:"-"`
+	DeviceID string `json:"-"`
+	Action   string `json:"action"`
+}
+
+type GetAdoptedDeviceDetailsRequest struct {
+	SiteID   string `json:"-"`
+	DeviceID string `json:"-"`
+}
+
+type RemoveDeviceRequest struct {
+	SiteID   string `json:"-"`
+	DeviceID string `json:"-"`
+}
+
+type GetLatestDeviceStatisticsRequest struct {
+	SiteID   string `json:"-"`
+	DeviceID string `json:"-"`
+}
+
+type ListPendingDevicesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
 }
 
 type DeviceTemperature struct {
@@ -127,8 +162,20 @@ type ConnectedClient struct {
 	Connected  bool   `json:"connected"`
 }
 
-type ClientActionRequest struct {
-	Action string `json:"action"`
+type ListConnectedClientsRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type GetConnectedClientDetailsRequest struct {
+	SiteID   string `json:"-"`
+	ClientID string `json:"-"`
+}
+
+type ExecuteClientActionRequest struct {
+	SiteID   string `json:"-"`
+	ClientID string `json:"-"`
+	Action   string `json:"action"`
 }
 
 type DhcpGuarding struct {
@@ -146,7 +193,13 @@ type Network struct {
 	Default      bool            `json:"default,omitempty"`
 }
 
+type ListNetworksRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateNetworkRequest struct {
+	SiteID       string        `json:"-"`
 	Management   string        `json:"management"`
 	Name         string        `json:"name"`
 	Enabled      bool          `json:"enabled"`
@@ -154,12 +207,29 @@ type CreateNetworkRequest struct {
 	DhcpGuarding *DhcpGuarding `json:"dhcpGuarding,omitempty"`
 }
 
+type GetNetworkDetailsRequest struct {
+	SiteID    string `json:"-"`
+	NetworkID string `json:"-"`
+}
+
 type UpdateNetworkRequest struct {
+	SiteID       string        `json:"-"`
+	NetworkID    string        `json:"-"`
 	Management   string        `json:"management"`
 	Name         string        `json:"name"`
 	Enabled      bool          `json:"enabled"`
 	VlanID       int           `json:"vlanId"`
 	DhcpGuarding *DhcpGuarding `json:"dhcpGuarding,omitempty"`
+}
+
+type DeleteNetworkRequest struct {
+	SiteID    string `json:"-"`
+	NetworkID string `json:"-"`
+}
+
+type GetNetworkReferencesRequest struct {
+	SiteID    string `json:"-"`
+	NetworkID string `json:"-"`
 }
 
 type NetworkReference struct {
@@ -260,11 +330,17 @@ type WifiBroadcast struct {
 	DtimPeriodByFrequencyGHzOverride    *DtimPeriodByFrequencyGHzOverride `json:"dtimPeriodByFrequencyGHzOverride,omitempty"`
 }
 
+type ListWifiBroadcastsRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateWifiBroadcastRequest struct {
+	SiteID                              string                            `json:"-"`
 	Type                                string                            `json:"type"`
 	Name                                string                            `json:"name"`
-	Network                             *WifiNetworkReference             `json:"network,omitempty"`
 	Enabled                             bool                              `json:"enabled"`
+	Network                             *WifiNetworkReference             `json:"network,omitempty"`
 	SecurityConfiguration               *WifiSecurityConfiguration        `json:"securityConfiguration,omitempty"`
 	BroadcastingDeviceFilter            *BroadcastingDeviceFilter         `json:"broadcastingDeviceFilter,omitempty"`
 	MdnsProxyConfiguration              *MdnsProxyConfiguration           `json:"mdnsProxyConfiguration,omitempty"`
@@ -286,11 +362,18 @@ type CreateWifiBroadcastRequest struct {
 	DtimPeriodByFrequencyGHzOverride    *DtimPeriodByFrequencyGHzOverride `json:"dtimPeriodByFrequencyGHzOverride,omitempty"`
 }
 
+type GetWifiBroadcastDetailsRequest struct {
+	SiteID          string `json:"-"`
+	WifiBroadcastID string `json:"-"`
+}
+
 type UpdateWifiBroadcastRequest struct {
+	SiteID                              string                            `json:"-"`
+	WifiBroadcastID                     string                            `json:"-"`
 	Type                                string                            `json:"type"`
 	Name                                string                            `json:"name"`
-	Network                             *WifiNetworkReference             `json:"network,omitempty"`
 	Enabled                             bool                              `json:"enabled"`
+	Network                             *WifiNetworkReference             `json:"network,omitempty"`
 	SecurityConfiguration               *WifiSecurityConfiguration        `json:"securityConfiguration,omitempty"`
 	BroadcastingDeviceFilter            *BroadcastingDeviceFilter         `json:"broadcastingDeviceFilter,omitempty"`
 	MdnsProxyConfiguration              *MdnsProxyConfiguration           `json:"mdnsProxyConfiguration,omitempty"`
@@ -310,6 +393,11 @@ type UpdateWifiBroadcastRequest struct {
 	BssTransitionEnabled                *bool                             `json:"bssTransitionEnabled,omitempty"`
 	AdvertiseDeviceName                 *bool                             `json:"advertiseDeviceName,omitempty"`
 	DtimPeriodByFrequencyGHzOverride    *DtimPeriodByFrequencyGHzOverride `json:"dtimPeriodByFrequencyGHzOverride,omitempty"`
+}
+
+type DeleteWifiBroadcastRequest struct {
+	SiteID          string `json:"-"`
+	WifiBroadcastID string `json:"-"`
 }
 
 type Voucher struct {
@@ -321,15 +409,32 @@ type Voucher struct {
 	Used      bool   `json:"used,omitempty"`
 }
 
+type ListVouchersRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type GenerateVouchersRequest struct {
+	SiteID    string `json:"-"`
 	Count     int    `json:"count"`
 	Duration  int    `json:"duration"`
 	DataQuota int    `json:"dataQuota,omitempty"`
 	Note      string `json:"note,omitempty"`
 }
 
+type GetVoucherDetailsRequest struct {
+	SiteID    string `json:"-"`
+	VoucherID string `json:"-"`
+}
+
+type DeleteVoucherRequest struct {
+	SiteID    string `json:"-"`
+	VoucherID string `json:"-"`
+}
+
 type DeleteVouchersRequest struct {
-	IDs []string `json:"ids"`
+	SiteID string   `json:"-"`
+	IDs    []string `json:"ids"`
 }
 
 type FirewallZone struct {
@@ -339,14 +444,32 @@ type FirewallZone struct {
 	Metadata   *EntityMetadata `json:"metadata,omitempty"`
 }
 
+type ListFirewallZonesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateFirewallZoneRequest struct {
+	SiteID     string   `json:"-"`
 	Name       string   `json:"name"`
 	NetworkIDs []string `json:"networkIds,omitempty"`
 }
 
+type GetFirewallZoneRequest struct {
+	SiteID string `json:"-"`
+	ZoneID string `json:"-"`
+}
+
 type UpdateFirewallZoneRequest struct {
+	SiteID     string   `json:"-"`
+	ZoneID     string   `json:"-"`
 	Name       string   `json:"name"`
 	NetworkIDs []string `json:"networkIds,omitempty"`
+}
+
+type DeleteFirewallZoneRequest struct {
+	SiteID string `json:"-"`
+	ZoneID string `json:"-"`
 }
 
 type FirewallPolicyAction struct {
@@ -388,7 +511,13 @@ type FirewallPolicy struct {
 	Metadata              *EntityMetadata          `json:"metadata,omitempty"`
 }
 
+type ListFirewallPoliciesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateFirewallPolicyRequest struct {
+	SiteID                string                   `json:"-"`
 	Enabled               bool                     `json:"enabled"`
 	Name                  string                   `json:"name"`
 	Description           string                   `json:"description,omitempty"`
@@ -400,9 +529,16 @@ type CreateFirewallPolicyRequest struct {
 	IpsecFilter           string                   `json:"ipsecFilter,omitempty"`
 	LoggingEnabled        bool                     `json:"loggingEnabled"`
 	Schedule              *FirewallSchedule        `json:"schedule,omitempty"`
+}
+
+type GetFirewallPolicyRequest struct {
+	SiteID   string `json:"-"`
+	PolicyID string `json:"-"`
 }
 
 type UpdateFirewallPolicyRequest struct {
+	SiteID                string                   `json:"-"`
+	PolicyID              string                   `json:"-"`
 	Enabled               bool                     `json:"enabled"`
 	Name                  string                   `json:"name"`
 	Description           string                   `json:"description,omitempty"`
@@ -416,7 +552,14 @@ type UpdateFirewallPolicyRequest struct {
 	Schedule              *FirewallSchedule        `json:"schedule,omitempty"`
 }
 
+type DeleteFirewallPolicyRequest struct {
+	SiteID   string `json:"-"`
+	PolicyID string `json:"-"`
+}
+
 type PatchFirewallPolicyRequest struct {
+	SiteID                string                   `json:"-"`
+	PolicyID              string                   `json:"-"`
 	Enabled               *bool                    `json:"enabled,omitempty"`
 	Name                  string                   `json:"name,omitempty"`
 	Description           string                   `json:"description,omitempty"`
@@ -434,7 +577,12 @@ type FirewallPolicyOrdering struct {
 	PolicyIDs []string `json:"policyIds"`
 }
 
+type GetFirewallPolicyOrderingRequest struct {
+	SiteID string `json:"-"`
+}
+
 type UpdateFirewallPolicyOrderingRequest struct {
+	SiteID    string   `json:"-"`
 	PolicyIDs []string `json:"policyIds"`
 }
 
@@ -464,7 +612,13 @@ type ACLRule struct {
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
 }
 
+type ListACLRulesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateACLRuleRequest struct {
+	SiteID                string             `json:"-"`
 	Type                  string             `json:"type"`
 	Enabled               bool               `json:"enabled"`
 	Name                  string             `json:"name"`
@@ -477,7 +631,14 @@ type CreateACLRuleRequest struct {
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
 }
 
+type GetACLRuleRequest struct {
+	SiteID string `json:"-"`
+	RuleID string `json:"-"`
+}
+
 type UpdateACLRuleRequest struct {
+	SiteID                string             `json:"-"`
+	RuleID                string             `json:"-"`
 	Type                  string             `json:"type"`
 	Enabled               bool               `json:"enabled"`
 	Name                  string             `json:"name"`
@@ -489,11 +650,21 @@ type UpdateACLRuleRequest struct {
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
 }
 
+type DeleteACLRuleRequest struct {
+	SiteID string `json:"-"`
+	RuleID string `json:"-"`
+}
+
 type ACLRuleOrdering struct {
 	RuleIDs []string `json:"ruleIds"`
 }
 
+type GetACLRuleOrderingRequest struct {
+	SiteID string `json:"-"`
+}
+
 type UpdateACLRuleOrderingRequest struct {
+	SiteID  string   `json:"-"`
 	RuleIDs []string `json:"ruleIds"`
 }
 
@@ -507,7 +678,13 @@ type DNSPolicy struct {
 	TTLSeconds  int             `json:"ttlSeconds,omitempty"`
 }
 
+type ListDNSPoliciesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateDNSPolicyRequest struct {
+	SiteID      string `json:"-"`
 	Type        string `json:"type"`
 	Enabled     bool   `json:"enabled"`
 	Domain      string `json:"domain,omitempty"`
@@ -515,12 +692,24 @@ type CreateDNSPolicyRequest struct {
 	TTLSeconds  int    `json:"ttlSeconds,omitempty"`
 }
 
+type GetDNSPolicyRequest struct {
+	SiteID   string `json:"-"`
+	PolicyID string `json:"-"`
+}
+
 type UpdateDNSPolicyRequest struct {
+	SiteID      string `json:"-"`
+	PolicyID    string `json:"-"`
 	Type        string `json:"type"`
 	Enabled     bool   `json:"enabled"`
 	Domain      string `json:"domain,omitempty"`
 	IPv4Address string `json:"ipv4Address,omitempty"`
 	TTLSeconds  int    `json:"ttlSeconds,omitempty"`
+}
+
+type DeleteDNSPolicyRequest struct {
+	SiteID   string `json:"-"`
+	PolicyID string `json:"-"`
 }
 
 type TrafficMatchingList struct {
@@ -531,16 +720,71 @@ type TrafficMatchingList struct {
 	Metadata *EntityMetadata `json:"metadata,omitempty"`
 }
 
+type ListTrafficMatchingListsRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
 type CreateTrafficMatchingListRequest struct {
+	SiteID  string   `json:"-"`
 	Name    string   `json:"name"`
 	Type    string   `json:"type,omitempty"`
 	Entries []string `json:"entries,omitempty"`
 }
 
+type GetTrafficMatchingListRequest struct {
+	SiteID string `json:"-"`
+	ListID string `json:"-"`
+}
+
 type UpdateTrafficMatchingListRequest struct {
+	SiteID  string   `json:"-"`
+	ListID  string   `json:"-"`
 	Name    string   `json:"name"`
 	Type    string   `json:"type,omitempty"`
 	Entries []string `json:"entries,omitempty"`
+}
+
+type DeleteTrafficMatchingListRequest struct {
+	SiteID string `json:"-"`
+	ListID string `json:"-"`
+}
+
+type ListWANInterfacesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type ListVPNTunnelsRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type ListVPNServersRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type ListRadiusProfilesRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type ListDeviceTagsRequest struct {
+	SiteID     string            `json:"-"`
+	Pagination *PaginationParams `json:"-"`
+}
+
+type ListDPICategoriesRequest struct {
+	SiteID string `json:"-"`
+}
+
+type ListDPIApplicationsRequest struct {
+	SiteID string `json:"-"`
+}
+
+type ListCountriesRequest struct {
+	SiteID string `json:"-"`
 }
 
 type WANInterface struct {

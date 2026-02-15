@@ -10,8 +10,8 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) GetNetworkDetails(ctx context.Context, siteID, networkID string) (*types.Network, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", siteID, networkID), nil)
+func (c *Client) GetNetworkDetails(ctx context.Context, req types.GetNetworkDetailsRequest) (*types.Network, error) {
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", req.SiteID, req.NetworkID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -24,8 +24,8 @@ func (c *Client) GetNetworkDetails(ctx context.Context, siteID, networkID string
 	return &result, nil
 }
 
-func (c *Client) UpdateNetwork(ctx context.Context, siteID, networkID string, req types.UpdateNetworkRequest) (*types.Network, error) {
-	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", siteID, networkID), nil, req)
+func (c *Client) UpdateNetwork(ctx context.Context, req types.UpdateNetworkRequest) (*types.Network, error) {
+	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", req.SiteID, req.NetworkID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -38,8 +38,8 @@ func (c *Client) UpdateNetwork(ctx context.Context, siteID, networkID string, re
 	return &result, nil
 }
 
-func (c *Client) DeleteNetwork(ctx context.Context, siteID, networkID string) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", siteID, networkID), nil)
+func (c *Client) DeleteNetwork(ctx context.Context, req types.DeleteNetworkRequest) error {
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s", req.SiteID, req.NetworkID), nil)
 	if err != nil {
 		return err
 	}
@@ -48,11 +48,11 @@ func (c *Client) DeleteNetwork(ctx context.Context, siteID, networkID string) er
 	return nil
 }
 
-func (c *Client) ListNetworks(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.Network], error) {
+func (c *Client) ListNetworks(ctx context.Context, req types.ListNetworksRequest) (*types.PaginatedResponse[types.Network], error) {
 	query := url.Values{}
-	applyPagination(query, params)
+	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks", siteID), query)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +65,8 @@ func (c *Client) ListNetworks(ctx context.Context, siteID string, params *types.
 	return &result, nil
 }
 
-func (c *Client) CreateNetwork(ctx context.Context, siteID string, req types.CreateNetworkRequest) (*types.Network, error) {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/networks", siteID), nil, req)
+func (c *Client) CreateNetwork(ctx context.Context, req types.CreateNetworkRequest) (*types.Network, error) {
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/networks", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -79,8 +79,8 @@ func (c *Client) CreateNetwork(ctx context.Context, siteID string, req types.Cre
 	return &result, nil
 }
 
-func (c *Client) GetNetworkReferences(ctx context.Context, siteID, networkID string) (json.RawMessage, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s/references", siteID, networkID), nil)
+func (c *Client) GetNetworkReferences(ctx context.Context, req types.GetNetworkReferencesRequest) (json.RawMessage, error) {
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/networks/%s/references", req.SiteID, req.NetworkID), nil)
 	if err != nil {
 		return nil, err
 	}

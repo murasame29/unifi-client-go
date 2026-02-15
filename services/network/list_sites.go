@@ -8,9 +8,9 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) ListSites(ctx context.Context, params *types.PaginationParams) (*types.PaginatedResponse[types.Site], error) {
+func (c *Client) ListSites(ctx context.Context, req types.ListSitesRequest) (*types.PaginatedResponse[types.Site], error) {
 	query := url.Values{}
-	applyPagination(query, params)
+	applyPagination(query, req.Pagination)
 
 	resp, err := c.client.Get(ctx, "/v1/sites", query)
 	if err != nil {

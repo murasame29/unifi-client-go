@@ -9,8 +9,8 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) GetDNSPolicy(ctx context.Context, siteID, policyID string) (*types.DNSPolicy, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", siteID, policyID), nil)
+func (c *Client) GetDNSPolicy(ctx context.Context, req types.GetDNSPolicyRequest) (*types.DNSPolicy, error) {
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", req.SiteID, req.PolicyID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -23,8 +23,8 @@ func (c *Client) GetDNSPolicy(ctx context.Context, siteID, policyID string) (*ty
 	return &result, nil
 }
 
-func (c *Client) UpdateDNSPolicy(ctx context.Context, siteID, policyID string, req types.UpdateDNSPolicyRequest) (*types.DNSPolicy, error) {
-	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", siteID, policyID), nil, req)
+func (c *Client) UpdateDNSPolicy(ctx context.Context, req types.UpdateDNSPolicyRequest) (*types.DNSPolicy, error) {
+	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", req.SiteID, req.PolicyID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +37,8 @@ func (c *Client) UpdateDNSPolicy(ctx context.Context, siteID, policyID string, r
 	return &result, nil
 }
 
-func (c *Client) DeleteDNSPolicy(ctx context.Context, siteID, policyID string) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", siteID, policyID), nil)
+func (c *Client) DeleteDNSPolicy(ctx context.Context, req types.DeleteDNSPolicyRequest) error {
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies/%s", req.SiteID, req.PolicyID), nil)
 	if err != nil {
 		return err
 	}
@@ -47,11 +47,11 @@ func (c *Client) DeleteDNSPolicy(ctx context.Context, siteID, policyID string) e
 	return nil
 }
 
-func (c *Client) ListDNSPolicies(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.DNSPolicy], error) {
+func (c *Client) ListDNSPolicies(ctx context.Context, req types.ListDNSPoliciesRequest) (*types.PaginatedResponse[types.DNSPolicy], error) {
 	query := url.Values{}
-	applyPagination(query, params)
+	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies", siteID), query)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (c *Client) ListDNSPolicies(ctx context.Context, siteID string, params *typ
 	return &result, nil
 }
 
-func (c *Client) CreateDNSPolicy(ctx context.Context, siteID string, req types.CreateDNSPolicyRequest) (*types.DNSPolicy, error) {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies", siteID), nil, req)
+func (c *Client) CreateDNSPolicy(ctx context.Context, req types.CreateDNSPolicyRequest) (*types.DNSPolicy, error) {
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/dns/policies", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}

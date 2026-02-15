@@ -9,8 +9,8 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) ExecuteClientAction(ctx context.Context, siteID, clientID string, req types.ClientActionRequest) error {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s/actions", siteID, clientID), nil, req)
+func (c *Client) ExecuteClientAction(ctx context.Context, req types.ExecuteClientActionRequest) error {
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s/actions", req.SiteID, req.ClientID), nil, req)
 	if err != nil {
 		return err
 	}
@@ -18,11 +18,11 @@ func (c *Client) ExecuteClientAction(ctx context.Context, siteID, clientID strin
 	return internal.Decode(resp, &struct{}{})
 }
 
-func (c *Client) ListConnectedClients(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.ConnectedClient], error) {
+func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnectedClientsRequest) (*types.PaginatedResponse[types.ConnectedClient], error) {
 	query := url.Values{}
-	applyPagination(query, params)
+	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/clients", siteID), query)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/clients", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func (c *Client) ListConnectedClients(ctx context.Context, siteID string, params
 	return &result, nil
 }
 
-func (c *Client) GetConnectedClientDetails(ctx context.Context, siteID, clientID string) (*types.ConnectedClient, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s", siteID, clientID), nil)
+func (c *Client) GetConnectedClientDetails(ctx context.Context, req types.GetConnectedClientDetailsRequest) (*types.ConnectedClient, error) {
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s", req.SiteID, req.ClientID), nil)
 	if err != nil {
 		return nil, err
 	}

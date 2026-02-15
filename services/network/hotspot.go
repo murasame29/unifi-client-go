@@ -9,11 +9,11 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) ListVouchers(ctx context.Context, siteID string, params *types.PaginationParams) (*types.PaginatedResponse[types.Voucher], error) {
+func (c *Client) ListVouchers(ctx context.Context, req types.ListVouchersRequest) (*types.PaginatedResponse[types.Voucher], error) {
 	query := url.Values{}
-	applyPagination(query, params)
+	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", siteID), query)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", req.SiteID), query)
 	if err != nil {
 		return nil, err
 	}
@@ -26,8 +26,8 @@ func (c *Client) ListVouchers(ctx context.Context, siteID string, params *types.
 	return &result, nil
 }
 
-func (c *Client) GenerateVouchers(ctx context.Context, siteID string, req types.GenerateVouchersRequest) ([]types.Voucher, error) {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", siteID), nil, req)
+func (c *Client) GenerateVouchers(ctx context.Context, req types.GenerateVouchersRequest) ([]types.Voucher, error) {
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers", req.SiteID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +40,8 @@ func (c *Client) GenerateVouchers(ctx context.Context, siteID string, req types.
 	return result, nil
 }
 
-func (c *Client) DeleteVouchers(ctx context.Context, siteID string, req types.DeleteVouchersRequest) error {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/delete", siteID), nil, req)
+func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersRequest) error {
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/delete", req.SiteID), nil, req)
 	if err != nil {
 		return err
 	}
@@ -50,8 +50,8 @@ func (c *Client) DeleteVouchers(ctx context.Context, siteID string, req types.De
 	return nil
 }
 
-func (c *Client) GetVoucherDetails(ctx context.Context, siteID, voucherID string) (*types.Voucher, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/%s", siteID, voucherID), nil)
+func (c *Client) GetVoucherDetails(ctx context.Context, req types.GetVoucherDetailsRequest) (*types.Voucher, error) {
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/%s", req.SiteID, req.VoucherID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (c *Client) GetVoucherDetails(ctx context.Context, siteID, voucherID string
 	return &result, nil
 }
 
-func (c *Client) DeleteVoucher(ctx context.Context, siteID, voucherID string) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/%s", siteID, voucherID), nil)
+func (c *Client) DeleteVoucher(ctx context.Context, req types.DeleteVoucherRequest) error {
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/%s", req.SiteID, req.VoucherID), nil)
 	if err != nil {
 		return err
 	}
