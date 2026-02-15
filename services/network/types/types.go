@@ -168,7 +168,7 @@ type PendingDevice struct {
 	FirmwareVersion       string   `json:"firmwareVersion,omitempty"`
 	FirmwareUpdatable     bool     `json:"firmwareUpdatable"`
 	Features              []string `json:"features,omitempty"`
-	AdoptionTargetSiteIds []string `json:"adoptionTargetSiteIds,omitempty"`
+	AdoptionTargetSiteIDs []string `json:"adoptionTargetSiteIds,omitempty"`
 }
 
 type ClientAccess struct {
@@ -242,8 +242,8 @@ type ExecuteClientActionRequest struct {
 	TxRateLimitKbps      *int   `json:"txRateLimitKbps,omitempty"`
 }
 
-type DhcpGuarding struct {
-	TrustedDhcpServerIPAddresses []string `json:"trustedDhcpServerIpAddresses,omitempty"`
+type DHCPGuarding struct {
+	TrustedDHCPServerIPAddresses []string `json:"trustedDhcpServerIpAddresses,omitempty"`
 }
 
 type NetworkDHCPIPAddressRange struct {
@@ -260,7 +260,7 @@ type NetworkDHCPConfiguration struct {
 	Mode                         string                     `json:"mode"`
 	IPAddressRange               *NetworkDHCPIPAddressRange `json:"ipAddressRange,omitempty"`
 	GatewayIPAddressOverride     string                     `json:"gatewayIpAddressOverride,omitempty"`
-	DnsServerIPAddressesOverride []string                   `json:"dnsServerIpAddressesOverride,omitempty"`
+	DNSServerIPAddressesOverride []string                   `json:"dnsServerIpAddressesOverride,omitempty"`
 	LeaseTimeSeconds             *int                       `json:"leaseTimeSeconds,omitempty"`
 	DomainName                   string                     `json:"domainName,omitempty"`
 	PingConflictDetectionEnabled *bool                      `json:"pingConflictDetectionEnabled,omitempty"`
@@ -269,9 +269,9 @@ type NetworkDHCPConfiguration struct {
 	Option43Value                string                     `json:"option43Value,omitempty"`
 	TftpServerAddress            string                     `json:"tftpServerAddress,omitempty"`
 	TimeOffsetSeconds            *int                       `json:"timeOffsetSeconds,omitempty"`
-	WpadUrl                      string                     `json:"wpadUrl,omitempty"`
+	WpadURL                      string                     `json:"wpadUrl,omitempty"`
 	WinsServerIPAddresses        []string                   `json:"winsServerIpAddresses,omitempty"`
-	DhcpServerIPAddresses        []string                   `json:"dhcpServerIpAddresses,omitempty"`
+	DHCPServerIPAddresses        []string                   `json:"dhcpServerIpAddresses,omitempty"`
 }
 
 type IPAddressSelector struct {
@@ -290,7 +290,7 @@ type NetworkIPv4Configuration struct {
 	HostIPAddress                     string                              `json:"hostIpAddress,omitempty"`
 	PrefixLength                      *int                                `json:"prefixLength,omitempty"`
 	AdditionalHostIPSubnets           []string                            `json:"additionalHostIpSubnets,omitempty"`
-	DhcpConfiguration                 *NetworkDHCPConfiguration           `json:"dhcpConfiguration,omitempty"`
+	DHCPConfiguration                 *NetworkDHCPConfiguration           `json:"dhcpConfiguration,omitempty"`
 	NatOutboundIPAddressConfiguration []NetworkNATOutboundIPAddressConfig `json:"natOutboundIpAddressConfiguration,omitempty"`
 }
 
@@ -305,7 +305,7 @@ type IPv6DHCPConfiguration struct {
 }
 
 type IPv6ClientAddressAssignment struct {
-	DhcpConfiguration *IPv6DHCPConfiguration `json:"dhcpConfiguration,omitempty"`
+	DHCPConfiguration *IPv6DHCPConfiguration `json:"dhcpConfiguration,omitempty"`
 	SlaacEnabled      bool                   `json:"slaacEnabled"`
 }
 
@@ -317,7 +317,7 @@ type NetworkIPv6Configuration struct {
 	InterfaceType                  string                       `json:"interfaceType"`
 	ClientAddressAssignment        *IPv6ClientAddressAssignment `json:"clientAddressAssignment"`
 	RouterAdvertisement            *IPv6RouterAdvertisement     `json:"routerAdvertisement,omitempty"`
-	DnsServerIPAddressesOverride   []string                     `json:"dnsServerIpAddressesOverride,omitempty"`
+	DNSServerIPAddressesOverride   []string                     `json:"dnsServerIpAddressesOverride,omitempty"`
 	AdditionalHostIPSubnets        []string                     `json:"additionalHostIpSubnets,omitempty"`
 	PrefixDelegationWanInterfaceID string                       `json:"prefixDelegationWanInterfaceId,omitempty"`
 	HostIPAddress                  string                       `json:"hostIpAddress,omitempty"`
@@ -331,7 +331,7 @@ type Network struct {
 	Enabled               bool                      `json:"enabled"`
 	VlanID                int                       `json:"vlanId"`
 	Metadata              *EntityMetadata           `json:"metadata,omitempty"`
-	DhcpGuarding          *DhcpGuarding             `json:"dhcpGuarding,omitempty"`
+	DHCPGuarding          *DHCPGuarding             `json:"dhcpGuarding,omitempty"`
 	Default               bool                      `json:"default,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
@@ -354,7 +354,7 @@ type CreateNetworkRequest struct {
 	Name                  string                    `json:"name"`
 	Enabled               bool                      `json:"enabled"`
 	VlanID                int                       `json:"vlanId"`
-	DhcpGuarding          *DhcpGuarding             `json:"dhcpGuarding,omitempty"`
+	DHCPGuarding          *DHCPGuarding             `json:"dhcpGuarding,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
 	DeviceID              string                    `json:"deviceId,omitempty"`
@@ -377,7 +377,7 @@ type UpdateNetworkRequest struct {
 	Name                  string                    `json:"name"`
 	Enabled               bool                      `json:"enabled"`
 	VlanID                int                       `json:"vlanId"`
-	DhcpGuarding          *DhcpGuarding             `json:"dhcpGuarding,omitempty"`
+	DHCPGuarding          *DHCPGuarding             `json:"dhcpGuarding,omitempty"`
 	IsolationEnabled      *bool                     `json:"isolationEnabled,omitempty"`
 	CellularBackupEnabled *bool                     `json:"cellularBackupEnabled,omitempty"`
 	DeviceID              string                    `json:"deviceId,omitempty"`
@@ -445,7 +445,7 @@ type SaeConfiguration struct {
 
 type WifiRadiusConfiguration struct {
 	ProfileID                      string                          `json:"profileId"`
-	NasId                          *WifiRadiusNasIdConfiguration   `json:"nasId,omitempty"`
+	NasID                          *WifiRadiusNasIdConfiguration   `json:"nasId,omitempty"`
 	MacAuthenticationConfiguration *WifiRadiusMacAuthConfiguration `json:"macAuthenticationConfiguration,omitempty"`
 }
 
@@ -809,7 +809,7 @@ type FirewallPortFilter struct {
 	Type                  string                   `json:"type"`
 	MatchOpposite         bool                     `json:"matchOpposite"`
 	Items                 []FirewallPortFilterItem `json:"items,omitempty"`
-	TrafficMatchingListId string                   `json:"trafficMatchingListId,omitempty"`
+	TrafficMatchingListID string                   `json:"trafficMatchingListId,omitempty"`
 }
 
 type FirewallPortFilterItem struct {
@@ -820,7 +820,7 @@ type FirewallPortFilterItem struct {
 }
 
 type FirewallNetworkFilter struct {
-	NetworkIds    []string `json:"networkIds"`
+	NetworkIDs    []string `json:"networkIds"`
 	MatchOpposite bool     `json:"matchOpposite"`
 }
 
@@ -832,7 +832,7 @@ type FirewallIPAddressFilter struct {
 	Type                  string                        `json:"type"`
 	MatchOpposite         bool                          `json:"matchOpposite"`
 	Items                 []FirewallIPAddressFilterItem `json:"items,omitempty"`
-	TrafficMatchingListId string                        `json:"trafficMatchingListId,omitempty"`
+	TrafficMatchingListID string                        `json:"trafficMatchingListId,omitempty"`
 }
 
 type FirewallIPAddressFilterItem struct {
@@ -852,12 +852,12 @@ type FirewallRegionFilter struct {
 }
 
 type FirewallVPNServerFilter struct {
-	VpnServerIds  []string `json:"vpnServerIds"`
+	VpnServerIDs  []string `json:"vpnServerIds"`
 	MatchOpposite bool     `json:"matchOpposite"`
 }
 
 type FirewallSiteToSiteVPNTunnelFilter struct {
-	SiteToSiteVpnTunnelId string `json:"siteToSiteVpnTunnelId"`
+	SiteToSiteVpnTunnelID string `json:"siteToSiteVpnTunnelId"`
 }
 
 type FirewallPolicyEndpoint struct {
@@ -970,26 +970,26 @@ type PatchFirewallPolicyRequest struct {
 	LoggingEnabled bool   `json:"loggingEnabled"`
 }
 
-type OrderedFirewallPolicyIds struct {
+type OrderedFirewallPolicyIDs struct {
 	BeforeSystemDefined []string `json:"beforeSystemDefined"`
 	AfterSystemDefined  []string `json:"afterSystemDefined"`
 }
 
 type FirewallPolicyOrdering struct {
-	OrderedFirewallPolicyIds OrderedFirewallPolicyIds `json:"orderedFirewallPolicyIds"`
+	OrderedFirewallPolicyIDs OrderedFirewallPolicyIDs `json:"orderedFirewallPolicyIds"`
 }
 
 type GetFirewallPolicyOrderingRequest struct {
 	SiteID                    string `json:"-"`
-	SourceFirewallZoneId      string `json:"-"`
-	DestinationFirewallZoneId string `json:"-"`
+	SourceFirewallZoneID      string `json:"-"`
+	DestinationFirewallZoneID string `json:"-"`
 }
 
 type UpdateFirewallPolicyOrderingRequest struct {
 	SiteID                    string                   `json:"-"`
-	SourceFirewallZoneId      string                   `json:"-"`
-	DestinationFirewallZoneId string                   `json:"-"`
-	OrderedFirewallPolicyIds  OrderedFirewallPolicyIds `json:"orderedFirewallPolicyIds"`
+	SourceFirewallZoneID      string                   `json:"-"`
+	DestinationFirewallZoneID string                   `json:"-"`
+	OrderedFirewallPolicyIDs  OrderedFirewallPolicyIDs `json:"orderedFirewallPolicyIds"`
 }
 
 type ACLDeviceFilter struct {
@@ -1000,7 +1000,7 @@ type ACLDeviceFilter struct {
 type ACLEndpointFilter struct {
 	Type                 string   `json:"type"`
 	IpAddressesOrSubnets []string `json:"ipAddressesOrSubnets,omitempty"`
-	NetworkIds           []string `json:"networkIds,omitempty"`
+	NetworkIDs           []string `json:"networkIds,omitempty"`
 	PortFilter           []int    `json:"portFilter,omitempty"`
 	MacAddresses         []string `json:"macAddresses,omitempty"`
 	PrefixLength         *int     `json:"prefixLength,omitempty"`
@@ -1069,7 +1069,7 @@ type DeleteACLRuleRequest struct {
 }
 
 type ACLRuleOrdering struct {
-	OrderedAclRuleIds []string `json:"orderedAclRuleIds"`
+	OrderedACLRuleIDs []string `json:"orderedAclRuleIds"`
 }
 
 type GetACLRuleOrderingRequest struct {
@@ -1078,7 +1078,7 @@ type GetACLRuleOrderingRequest struct {
 
 type UpdateACLRuleOrderingRequest struct {
 	SiteID            string   `json:"-"`
-	OrderedAclRuleIds []string `json:"orderedAclRuleIds"`
+	OrderedACLRuleIDs []string `json:"orderedAclRuleIds"`
 }
 
 type DNSPolicy struct {
