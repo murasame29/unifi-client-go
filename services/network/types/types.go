@@ -1222,29 +1222,25 @@ type ListDeviceTagsRequest struct {
 }
 
 type ListDPICategoriesRequest struct {
-	SiteID string `json:"-"`
+	Pagination *PaginationParams `json:"-"`
 }
 
 type ListDPIApplicationsRequest struct {
-	SiteID string `json:"-"`
+	Pagination *PaginationParams `json:"-"`
 }
 
 type ListCountriesRequest struct {
-	SiteID string `json:"-"`
+	Pagination *PaginationParams `json:"-"`
 }
 
 type WANInterface struct {
-	ID       string          `json:"id,omitempty"`
-	Name     string          `json:"name,omitempty"`
-	Enabled  bool            `json:"enabled,omitempty"`
-	Type     string          `json:"type,omitempty"`
-	Metadata *EntityMetadata `json:"metadata,omitempty"`
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 type VPNTunnel struct {
 	ID       string          `json:"id,omitempty"`
 	Name     string          `json:"name,omitempty"`
-	Enabled  bool            `json:"enabled,omitempty"`
 	Type     string          `json:"type,omitempty"`
 	Metadata *EntityMetadata `json:"metadata,omitempty"`
 }
@@ -1264,8 +1260,10 @@ type RadiusProfile struct {
 }
 
 type DeviceTag struct {
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	ID        string          `json:"id,omitempty"`
+	Name      string          `json:"name,omitempty"`
+	DeviceIDs []string        `json:"deviceIds,omitempty"`
+	Metadata  *EntityMetadata `json:"metadata,omitempty"`
 }
 
 type DPIApplicationCategory struct {
@@ -1274,9 +1272,8 @@ type DPIApplicationCategory struct {
 }
 
 type DPIApplication struct {
-	ID         string `json:"id,omitempty"`
-	Name       string `json:"name,omitempty"`
-	CategoryID string `json:"categoryId,omitempty"`
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 type Country struct {
