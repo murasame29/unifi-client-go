@@ -191,10 +191,37 @@ type GetConnectedClientDetailsRequest struct {
 	ClientID string `json:"-"`
 }
 
+type AuthorizationUsage struct {
+	DurationSec int `json:"durationSec"`
+	RxBytes     int `json:"rxBytes"`
+	TxBytes     int `json:"txBytes"`
+	Bytes       int `json:"bytes"`
+}
+
+type GuestAuthorization struct {
+	AuthorizedAt         string              `json:"authorizedAt"`
+	AuthorizationMethod  string              `json:"authorizationMethod"`
+	ExpiresAt            string              `json:"expiresAt"`
+	DataUsageLimitMBytes *int                `json:"dataUsageLimitMBytes,omitempty"`
+	RxRateLimitKbps      *int                `json:"rxRateLimitKbps,omitempty"`
+	TxRateLimitKbps      *int                `json:"txRateLimitKbps,omitempty"`
+	Usage                *AuthorizationUsage `json:"usage,omitempty"`
+}
+
+type ClientActionResponse struct {
+	Action               string              `json:"action"`
+	RevokedAuthorization *GuestAuthorization `json:"revokedAuthorization,omitempty"`
+	GrantedAuthorization *GuestAuthorization `json:"grantedAuthorization,omitempty"`
+}
+
 type ExecuteClientActionRequest struct {
-	SiteID   string `json:"-"`
-	ClientID string `json:"-"`
-	Action   string `json:"action"`
+	SiteID               string `json:"-"`
+	ClientID             string `json:"-"`
+	Action               string `json:"action"`
+	TimeLimitMinutes     *int   `json:"timeLimitMinutes,omitempty"`
+	DataUsageLimitMBytes *int   `json:"dataUsageLimitMBytes,omitempty"`
+	RxRateLimitKbps      *int   `json:"rxRateLimitKbps,omitempty"`
+	TxRateLimitKbps      *int   `json:"txRateLimitKbps,omitempty"`
 }
 
 type DhcpGuarding struct {

@@ -9,13 +9,18 @@ import (
 	"github.com/murasame29/unifi-client-go/services/network/types"
 )
 
-func (c *Client) ExecuteClientAction(ctx context.Context, req types.ExecuteClientActionRequest) error {
+func (c *Client) ExecuteClientAction(ctx context.Context, req types.ExecuteClientActionRequest) (*types.ClientActionResponse, error) {
 	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/clients/%s/actions", req.SiteID, req.ClientID), nil, req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return internal.Decode(resp, &struct{}{})
+	var result types.ClientActionResponse
+	if err := internal.Decode(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
 
 func (c *Client) ListConnectedClients(ctx context.Context, req types.ListConnectedClientsRequest) (*types.PaginatedResponse[types.ConnectedClient], error) {
