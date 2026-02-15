@@ -40,7 +40,7 @@ func (c *Client) GenerateVouchers(ctx context.Context, req types.GenerateVoucher
 	return &result, nil
 }
 
-func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersRequest) (*types.DeleteVouchersResponse, error) {
+func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersRequest) (*types.DeleteVoucherResponse, error) {
 	query := url.Values{}
 	if req.Filter != "" {
 		query.Set("filter", req.Filter)
@@ -51,7 +51,7 @@ func (c *Client) DeleteVouchers(ctx context.Context, req types.DeleteVouchersReq
 		return nil, err
 	}
 
-	var result types.DeleteVouchersResponse
+	var result types.DeleteVoucherResponse
 	if err := internal.Decode(resp, &result); err != nil {
 		return nil, err
 	}
@@ -73,12 +73,16 @@ func (c *Client) GetVoucherDetails(ctx context.Context, req types.GetVoucherDeta
 	return &result, nil
 }
 
-func (c *Client) DeleteVoucher(ctx context.Context, req types.DeleteVoucherRequest) error {
+func (c *Client) DeleteVoucher(ctx context.Context, req types.DeleteVoucherRequest) (*types.DeleteVoucherResponse, error) {
 	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/hotspot/vouchers/%s", req.SiteID, req.VoucherID), nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_ = resp.Body.Close()
-	return nil
+	var result types.DeleteVoucherResponse
+	if err := internal.Decode(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

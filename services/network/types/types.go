@@ -676,7 +676,7 @@ type DeleteVouchersRequest struct {
 	Filter string `json:"-"`
 }
 
-type DeleteVouchersResponse struct {
+type DeleteVoucherResponse struct {
 	VouchersDeleted int `json:"vouchersDeleted"`
 }
 
