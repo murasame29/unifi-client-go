@@ -10,7 +10,7 @@ import (
 )
 
 func (c *Client) GetACLRule(ctx context.Context, req types.GetACLRuleRequest) (*types.ACLRule, error) {
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/%s", req.SiteID, req.RuleID), nil)
+	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules/%s", req.SiteID, req.RuleID), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (c *Client) GetACLRule(ctx context.Context, req types.GetACLRuleRequest) (*
 }
 
 func (c *Client) UpdateACLRule(ctx context.Context, req types.UpdateACLRuleRequest) (*types.ACLRule, error) {
-	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/%s", req.SiteID, req.RuleID), nil, req)
+	resp, err := c.client.Put(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules/%s", req.SiteID, req.RuleID), nil, req)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (c *Client) UpdateACLRule(ctx context.Context, req types.UpdateACLRuleReque
 }
 
 func (c *Client) DeleteACLRule(ctx context.Context, req types.DeleteACLRuleRequest) error {
-	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/acl/rules/%s", req.SiteID, req.RuleID), nil)
+	resp, err := c.client.Delete(ctx, fmt.Sprintf("/v1/sites/%s/acl-rules/%s", req.SiteID, req.RuleID), nil)
 	if err != nil {
 		return err
 	}

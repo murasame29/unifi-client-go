@@ -1056,6 +1056,7 @@ type UpdateACLRuleRequest struct {
 	Description           string             `json:"description,omitempty"`
 	Action                string             `json:"action"`
 	EnforcingDeviceFilter *ACLDeviceFilter   `json:"enforcingDeviceFilter,omitempty"`
+	Index                 int                `json:"index,omitempty"`
 	SourceFilter          *ACLEndpointFilter `json:"sourceFilter,omitempty"`
 	DestinationFilter     *ACLEndpointFilter `json:"destinationFilter,omitempty"`
 	ProtocolFilter        []string           `json:"protocolFilter,omitempty"`
@@ -1068,7 +1069,7 @@ type DeleteACLRuleRequest struct {
 }
 
 type ACLRuleOrdering struct {
-	RuleIDs []string `json:"ruleIds"`
+	OrderedAclRuleIds []string `json:"orderedAclRuleIds"`
 }
 
 type GetACLRuleOrderingRequest struct {
@@ -1076,8 +1077,8 @@ type GetACLRuleOrderingRequest struct {
 }
 
 type UpdateACLRuleOrderingRequest struct {
-	SiteID  string   `json:"-"`
-	RuleIDs []string `json:"ruleIds"`
+	SiteID            string   `json:"-"`
+	OrderedAclRuleIds []string `json:"orderedAclRuleIds"`
 }
 
 type DNSPolicy struct {
