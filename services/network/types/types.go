@@ -129,27 +129,46 @@ type GetLatestDeviceStatisticsRequest struct {
 }
 
 type ListPendingDevicesRequest struct {
-	SiteID     string            `json:"-"`
 	Pagination *PaginationParams `json:"-"`
 }
 
-type DeviceTemperature struct {
-	Type  string  `json:"type,omitempty"`
-	Value float64 `json:"value,omitempty"`
+type StatisticsUplink struct {
+	TxRateBps int `json:"txRateBps"`
+	RxRateBps int `json:"rxRateBps"`
+}
+
+type StatisticsRadio struct {
+	FrequencyGHz float64 `json:"frequencyGHz"`
+	TxRetriesPct float64 `json:"txRetriesPct"`
+}
+
+type StatisticsInterfaces struct {
+	Radios []StatisticsRadio `json:"radios,omitempty"`
 }
 
 type DeviceStatistics struct {
-	Temperatures []DeviceTemperature `json:"temperatures,omitempty"`
-	Uptime       int                 `json:"uptime,omitempty"`
-	LoadAverage1 float64             `json:"loadAverage1,omitempty"`
-	LoadAverage5 float64             `json:"loadAverage5,omitempty"`
+	UptimeSec            int                   `json:"uptimeSec"`
+	LastHeartbeatAt      string                `json:"lastHeartbeatAt"`
+	NextHeartbeatAt      string                `json:"nextHeartbeatAt"`
+	LoadAverage1Min      float64               `json:"loadAverage1Min"`
+	LoadAverage5Min      float64               `json:"loadAverage5Min"`
+	LoadAverage15Min     float64               `json:"loadAverage15Min"`
+	CpuUtilizationPct    float64               `json:"cpuUtilizationPct"`
+	MemoryUtilizationPct float64               `json:"memoryUtilizationPct"`
+	Uplink               *StatisticsUplink     `json:"uplink,omitempty"`
+	Interfaces           *StatisticsInterfaces `json:"interfaces"`
 }
 
 type PendingDevice struct {
-	MacAddress string `json:"macAddress"`
-	IPAddress  string `json:"ipAddress"`
-	Model      string `json:"model"`
-	Supported  bool   `json:"supported"`
+	MacAddress            string   `json:"macAddress"`
+	IPAddress             string   `json:"ipAddress"`
+	Model                 string   `json:"model"`
+	State                 string   `json:"state"`
+	Supported             bool     `json:"supported"`
+	FirmwareVersion       string   `json:"firmwareVersion,omitempty"`
+	FirmwareUpdatable     bool     `json:"firmwareUpdatable"`
+	Features              []string `json:"features,omitempty"`
+	AdoptionTargetSiteIds []string `json:"adoptionTargetSiteIds,omitempty"`
 }
 
 type ConnectedClient struct {

@@ -41,7 +41,7 @@ func (c *Client) AdoptDevice(ctx context.Context, req types.AdoptDeviceRequest) 
 }
 
 func (c *Client) ExecutePortAction(ctx context.Context, req types.ExecutePortActionRequest) error {
-	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/devices/%s/ports/%d/actions", req.SiteID, req.DeviceID, req.PortIdx), nil, req)
+	resp, err := c.client.Post(ctx, fmt.Sprintf("/v1/sites/%s/devices/%s/interfaces/ports/%d/actions", req.SiteID, req.DeviceID, req.PortIdx), nil, req)
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func (c *Client) ListPendingDevices(ctx context.Context, req types.ListPendingDe
 	query := url.Values{}
 	applyPagination(query, req.Pagination)
 
-	resp, err := c.client.Get(ctx, fmt.Sprintf("/v1/sites/%s/devices/pending", req.SiteID), query)
+	resp, err := c.client.Get(ctx, "/v1/pending-devices", query)
 	if err != nil {
 		return nil, err
 	}
